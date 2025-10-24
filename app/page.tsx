@@ -1,103 +1,78 @@
-import Image from "next/image";
+"use client";
+
+import { BuildCourse } from "@/actions/courseBuilder";
+import {
+  modulesData,
+  modulesTitlesWithId,
+  QuizData,
+} from "@/lib/utils/courseConstants";
+import { ModuleData } from "@/lib/utils/types";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // const [stage, setStage] = useState(1);
+  async function getModuleData(
+    courseName: string,
+    modules: any[],
+    stage: number
+  ) {
+    const userPrompt = `For Course ${courseName}`;
+    return await BuildCourse({ userPrompt, data: modules, stage });
+  }
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  const prompt =
+    "build a course on artificial integlligence, this is a course for beginners, covers all the fundamental topics for getting started in ai.";
+  async function handleSubmit() {
+    //   const data = await BuildCourse({
+    //     userPrompt: prompt,
+    //     data: "",
+    //     stage : 1,
+    //   });
+    //   const { courseName, modules } = data;
+    //   if (!modules || !courseName) return;
+    // const moduleExplanationData : ModuleData[]  = await getModuleData(
+    //   courseName,
+    //   modules,
+    //   2
+    // );
+
+    // const moduleExplanationData: ModuleData[] = stage2AnotherData;
+    // console.log(moduleExplanationData);
+    // console.log(
+    //   "now we got the modules data, we are calling function to generate the quiz"
+    // );
+    // const modulesData = moduleExplanationData.map((module) => ({
+    //   title: module.moduleTitle,
+    //   description: module.description,
+    // }));
+    const ModuleExpandedData = await BuildCourse({
+      userPrompt: "Foundations of Artificial Intelligence: A Beginner’s Guide",
+      data: { courseId: "cmh28rvr8000tu9ukvjgil5c0", QuizData },
+      stage: 2,
+    });
+    const Quiz = await BuildCourse({
+      userPrompt: "Foundations of Artificial Intelligence: A Beginner’s Guide",
+      data: { courseId: "cmh28rvr8000tu9ukvjgil5c0", QuizData },
+      stage: 3,
+    });
+    console.log("quiz :", Quiz);
+  }
+  return (
+    <div className=" flex flex-col items-center justify-center min-h-screen">
+      <h1>{prompt}</h1>
+      <button
+        onClick={handleSubmit}
+        className=" p-2 bg-white text-black rounded-lg cursor-pointer"
+      >
+        Submit
+      </button>
+      <Link
+        href={"/course"}
+        className=" p-2 m-2 bg-white text-black rounded-lg cursor-pointer"
+      >
+        Go to Course
+      </Link>
     </div>
   );
 }

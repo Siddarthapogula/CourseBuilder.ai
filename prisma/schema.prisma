@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  courseId   String     @unique @default(cuid())
+  courseName String
+  modules    Module[]
+  quiz       Quiz?
+  references String[]
+  status     statusType
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([courseId])
+}
+
+enum statusType {
+  DRAFT
+  COMPLETED
+}
+
+model Module {
+  moduleId       String   @unique @default(cuid())
+  courseId       String
+  course         Course   @relation(fields: [courseId], references: [courseId])
+  title          String
+  description    String?
+  referenceVideo String?
+  referenceSite  String?
+  createdAt      DateTime @default(now())
+
+  @@id([moduleId, courseId])
+}
+
+model Quiz {
+  quizId    String     @unique @default(cuid())
+  courseId  String     @unique
+  course    Course     @relation(fields: [courseId], references: [courseId])
+  questions Question[]
+  tags      String[]
+  createdAt DateTime   @default(now())
+
+  @@id([quizId, courseId])
+}
+
+model Question {
+  questionId   String   @unique @default(cuid())
+  quizId       String
+  quiz         Quiz     @relation(fields: [quizId], references: [quizId])
+  question     String
+  options      String[]
+  answer       String
+  optionNumber Int
+  createdAt    DateTime @default(now())
+
+  @@id([questionId, quizId])
+}
