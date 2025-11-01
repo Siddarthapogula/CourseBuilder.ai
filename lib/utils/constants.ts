@@ -1,7 +1,7 @@
 export const getPrompt = (UserInput: string, data: any, stage: number) => {
   if (stage == 1) {
     return {
-      stage: "module_generation",
+      generationStage: "module_generation",
       prompt: `
         You are an expert course designer specialized in structuring educational content for various subjects.
 
@@ -29,7 +29,7 @@ export const getPrompt = (UserInput: string, data: any, stage: number) => {
     };
   } else if (stage == 2) {
     return {
-      stage: "module_expansion",
+      generationStage: "module_expansion",
       prompt: `
       You are an expert course designer specialized in structuring educational content for various subjects.
 
@@ -37,7 +37,7 @@ export const getPrompt = (UserInput: string, data: any, stage: number) => {
       Given a Course Name and a list of finalized modules (each with a 'title' and 'moduleId'), generate a detailed explanation, one relevant example, and additional references for each module.
 
       ### Input
-      Course Name: ${UserInput}
+      Course Name: ${data?.courseName}
       Modules List: ${JSON.stringify(data)} 
       // Note: 'data' is an array: [ { "moduleId": "clxyz...", "title": "..." } ]
 
@@ -62,7 +62,7 @@ export const getPrompt = (UserInput: string, data: any, stage: number) => {
     };
   } else {
     return {
-      stage: "quiz_generation",
+      generationStage: "quiz_generation",
       prompt: `
       You are an expert Quiz Creator specialized in designing educational assessments for university-level courses.
 
@@ -71,8 +71,8 @@ export const getPrompt = (UserInput: string, data: any, stage: number) => {
       Your task is to generate a **quiz with 10 diverse questions** that test understanding of key concepts, examples, and practical applications from the modules.
 
       ### Input
-      Course Name: ${UserInput}
-      Modules Data: ${JSON.stringify(data)}
+      Course Name: ${data?.courseName}
+      Modules Data: ${JSON.stringify(data?.modules)}
 
       ### Rules
       1. Output **only valid JSON** — no markdown, no commentary.
@@ -84,7 +84,7 @@ export const getPrompt = (UserInput: string, data: any, stage: number) => {
       {
         "question": "string",
         "options": ["string", "string", "string", "string"], // 4 unique options
-        "answer": {optionNumber : number, answer : "string"} // one from the options
+        "answer": {correctOptionNumber : number, answer : "string"} // one from the options
       }
 
       6. Avoid vague or opinion-based questions. Focus on factual or conceptual understanding.

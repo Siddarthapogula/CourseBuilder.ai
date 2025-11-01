@@ -1,15 +1,15 @@
 "use server";
 
+import { AppError, ValidationError } from "@/lib/utils/error-handling-class";
+import { GetResponseObject } from "@/lib/utils/helper";
 import { prisma } from "@/lib/utils/prisma";
 
 export async function createQuiz(data: any) {
-  if (!data || !data?.courseId) return;
-  console.log(data);
-
-  const questions = data.result;
   try {
-    const courseId = data.courseId;
-    const [newQuiz, updatedCourse] = await prisma.$transaction([
+    if (!data || !data?.courseId) throw new ValidationError("no modules found");
+    const questions = data?.result;
+    const courseId = data?.courseId;
+    const [quiz] = await prisma.$transaction([
       prisma.quiz.create({
         data: {
           courseId: courseId,
@@ -18,24 +18,20 @@ export async function createQuiz(data: any) {
               question: q?.question,
               options: q?.options,
               answer: q?.answer?.answer,
-              optionNumber: q?.answer?.optionNumber,
+              correctOptionNumber: q?.answer?.correctOptionNumber,
             })),
           },
         },
-      }),
-      prisma.course.update({
-        where: {
-          courseId: courseId,
-        },
-        data: {
-          status: "COMPLETED",
+        include: {
+          questions: true,
         },
       }),
     ]);
-    console.log(newQuiz, updatedCourse);
-    return { message: "success", data: { newQuiz, updatedCourse } };
-  } catch (e) {
-    console.log(e);
-    return { error: e };
+    return GetResponseObject("success", { quiz });
+  } catch (error: any) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+    throw new AppError("Unexpected Error Occured" + error, 500);
   }
 }
