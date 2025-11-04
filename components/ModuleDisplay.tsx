@@ -1,11 +1,11 @@
 "use client";
 import { ModuleData } from "@/lib/utils/types";
-import { useState } from "react";
 import { Card, CardContent, CardFooter, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { useState } from "react";
 
-export interface ModuleDisplayProps {
+interface ModuleDisplayProps {
   modulesData: ModuleData[];
 }
 
@@ -38,10 +38,18 @@ export default function ModuleDisplay({ modulesData }: ModuleDisplayProps) {
           <Card key={module?.moduleId} className=" bg-muted shadow-sm">
             {
               <CardContent>
-                <CardTitle className=" text-lg my-2 font-medium text-gray-800">
-                  {modulesData.indexOf(module) + 1}
-                  {". "}
-                  {module.title}
+                <CardTitle className=" text-md md:text-lg my-2 font-medium">
+                  <div className=" flex gap-2 items-center">
+                    <span>
+                      {modulesData.indexOf(module) + 1}
+                      {". "}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="truncate text-md md:text-lg">
+                        {module.title}
+                      </h3>
+                    </div>
+                  </div>
                 </CardTitle>
                 {displayedDiscription != "" && (
                   <p className="text-md text-gray-700 leading-relaxed whitespace-pre-line">

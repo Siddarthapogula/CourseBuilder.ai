@@ -8,6 +8,7 @@ import { updateModules } from "./module";
 import {
   AiError,
   AppError,
+  HandleApiError,
   ValidationError,
 } from "@/lib/utils/error-handling-class";
 import {
@@ -26,9 +27,6 @@ export async function BuildCourse({
   stage,
 }: BuildCourseRequestType) {
   try {
-    console.log("userPrompt : ", userPrompt);
-    console.log("data : ", data);
-    console.log("stage : ", stage);
     const { generationStage, prompt } = getPrompt(userPrompt, data, stage);
     if (!prompt || !generationStage)
       throw new ValidationError("provide prompt and generationStage correctly");
@@ -43,11 +41,6 @@ export async function BuildCourse({
       "$1"
     );
     const result = JSON.parse(cleaned);
-    await new Promise((res, rej) => {
-      setTimeout(() => {
-        res("");
-      }, 2000);
-    });
     if (stage == 1) {
       // return GetResponseObject("success", stage1OutputData);
       return await createCourse(result);
@@ -56,10 +49,10 @@ export async function BuildCourse({
       return await updateModules(result);
     } else if (stage == 3) {
       // return GetResponseObject("success", stage3OutputData.data);
-      console.log(data);
+      // console.log(data);
       const courseId = data?.data?.[0]?.courseId;
       if (!courseId) {
-        throw new Error("courseId not provided");
+        throw new ValidationError("courseId not provided");
       }
       return await createQuiz({
         courseId: courseId,
@@ -70,8 +63,7 @@ export async function BuildCourse({
         "Invalid Stage! stage should only be (1, 2, 3)"
       );
     }
-  } catch (error: any) {
-    if (error instanceof AppError) throw error;
-    throw new AppError("An unexpected error occurred.", 500);
+  } catch (e: any) {
+    throw HandleApiError(e);
   }
 }

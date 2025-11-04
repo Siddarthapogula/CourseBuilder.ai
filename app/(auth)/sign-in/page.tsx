@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 
 const userCredentialsSchema = z.object({
@@ -54,7 +54,6 @@ export default function () {
         setFormError(result.error);
       } else {
         router.push("/");
-        return;
       }
     } catch (e: any) {
       setFormError(e.message);
@@ -72,11 +71,13 @@ export default function () {
       setFormError("Failed to initiate Google sign-in");
     }
   };
+  useEffect(() => {
+    if (session && session.status == "authenticated") {
+      router.push("/");
+    }
+  }, [session?.status]);
   if (session && session.status == "loading") {
     return <LoadingDisplay message="Loading" />;
-  }
-  if (session && session.status == "authenticated") {
-    router.push("/");
   }
   return (
     <div className="min-h-screen flex justify-center items-center">
@@ -115,7 +116,7 @@ export default function () {
               variant={"destructive"}
               disabled={status == "Submitting"}
             >
-              Sign In with Google
+              Continue with Google
             </Button>
           </div>
           <p className=" text-red-600">{formError}</p>

@@ -22,6 +22,6 @@ export async function getUserIdOrThrowError() {
   if (session?.user) {
     return session.user.id;
   } else {
-    throw new Error("user Id not found");
+    throw new Error("UserId not found");
   }
 }

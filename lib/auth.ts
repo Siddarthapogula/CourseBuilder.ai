@@ -1,10 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "./utils/prisma";
+import { prisma } from "./prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { comparePasswordAgainstHash } from "./utils/helper";
-import { Tokens } from "@google/genai";
+import { NotFoundError, ValidationError } from "./utils/error-handling-class";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if (!user) {
-          throw new Error("Invalid Email");
+          throw new NotFoundError("Invalid Email Or User Does Not Exists");
         }
         if (!user.password) {
           return null;
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
             user.password
           ))
         ) {
-          throw new Error("Incorrect Password");
+          throw new ValidationError("Incorrect Password");
         }
         return {
           id: user.id,

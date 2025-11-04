@@ -1,8 +1,12 @@
 "use server";
 
-import { AppError, ValidationError } from "@/lib/utils/error-handling-class";
+import {
+  AppError,
+  HandleApiError,
+  ValidationError,
+} from "@/lib/utils/error-handling-class";
 import { GetResponseObject } from "@/lib/utils/helper";
-import { prisma } from "@/lib/utils/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function createQuiz(data: any) {
   try {
@@ -28,10 +32,7 @@ export async function createQuiz(data: any) {
       }),
     ]);
     return GetResponseObject("success", { quiz });
-  } catch (error: any) {
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw new AppError("Unexpected Error Occured" + error, 500);
+  } catch (e: any) {
+    throw HandleApiError(e);
   }
 }

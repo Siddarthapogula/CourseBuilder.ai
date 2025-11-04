@@ -96,3 +96,56 @@ export const getPrompt = (UserInput: string, data: any, stage: number) => {
     };
   }
 };
+
+export const HowItWorksData = [
+  {
+    title: "1. Start with a Prompt",
+    data: "Enter a simple prompt, like 'a 10-module course on Digital Marketing for beginners,' and select your domain (e.g., Marketing, CS).",
+  },
+  {
+    title: "2. Validate & Refine",
+    data: "Our AI instantly generates your course outline. You have full control to edit, delete, or add module titles before generating the full content.",
+  },
+  {
+    title: "3. Generate & Export",
+    data: "With one click, AI expands your outline into detailed lessons, finds reference materials, and even builds a 10-question quiz.",
+  },
+];
+
+export const Features = [
+  {
+    title: "AI-Powered Content",
+    data: "Generate high-quality, structured module descriptions, examples, and reference links (YouTube videos, articles) in seconds.",
+  },
+  {
+    title: "Automated Quiz Generation",
+    data: "Automatically create a relevant 10-question quiz for your course, complete with multiple-choice options and correct answers.",
+  },
+  {
+    title: "Domain-Aware",
+    data: "Our AI understands the context, whether you're building a course for Computer Science, Marketing, or History.",
+  },
+];
+
+import { Briefcase, GraduationCap, Laptop, Layers } from "lucide-react";
+
+export const audienceData = [
+  {
+    title: "Professors & Lecturers",
+    description:
+      "Quickly build a new curriculum or generate supplementary materials for your existing university courses.",
+    icon: <GraduationCap className="h-6 w-6 text-primary" />,
+  },
+  {
+    icon: <Briefcase className="h-6 w-6 text-primary" />,
+    title: "Corporate Trainers",
+    description:
+      "Create engaging and structured training modules for employee onboarding, skill-upskilling, and internal workshops.",
+  },
+  {
+    icon: <Laptop className="h-6 w-6 text-primary" />,
+    title: "Online Tutors",
+    description:
+      "Design a complete lesson plan, from outline to quiz, to provide a professional and structured experience for your clients.",
+  },
+];

@@ -10,7 +10,6 @@ export default function NotFound() {
     <div className="flex justify-center mt-34">
       <Card className=" p-3">
         <p>Could not find requested resource : {" " + pathname}</p>
-
         <Button>
           <Link href="/">Return Home</Link>
         </Button>

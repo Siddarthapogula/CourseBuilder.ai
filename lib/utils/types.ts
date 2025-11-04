@@ -3,6 +3,25 @@ export interface BuildCourseRequestType {
   data: any;
   stage: number;
 }
+export interface ResponseObject {
+  status: string;
+  data: any;
+}
+enum CourseStatusEnum {
+  "COMPLETED",
+  "DRAFT",
+}
+
+export interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  about?: string;
+  organization?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 export interface ModuleData {
   courseId: string;
@@ -11,43 +30,45 @@ export interface ModuleData {
   description?: string;
   referenceVideo?: string;
   referenceSite?: string;
-  createdAt?: Date;
-}
-export interface ResponseObject {
-  status: string;
-  data: any;
-}
-
-enum CourseStatusEnum {
-  "COMPLETED",
-  "DRAFT",
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CourseData {
-  courseName: string;
   courseId: string;
-  references: string[];
-  status: CourseStatusEnum;
+  userId: string;
+  courseName: string;
+  modules: ModuleData[];
+  quiz?: QuizData;
+  status?: CourseStatusEnum;
+  forkedFromId: string;
+  forks?: CourseData[];
+  _count: {
+    forks: number;
+  };
+  stars?: number;
+  references?: string[];
   createdAt: Date;
   updatedAt: Date;
-  modules: ModuleData[];
+  user: UserData;
 }
 
-
 export interface QuizData {
+  quizId: string;
   courseId: string;
   questions: Question[];
-  createdAt: Date;
-  quizId: string;
   tags: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Question {
-  createdAt: Date;
-  question: string;
-  quizId: string;
   questionId: string;
+  quizId: string;
+  question: string;
   options: string[];
   answer: string;
   correctOptionNumber: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

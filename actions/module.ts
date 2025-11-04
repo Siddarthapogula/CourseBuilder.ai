@@ -1,8 +1,12 @@
 "use server";
 
-import { AppError, ValidationError } from "@/lib/utils/error-handling-class";
+import {
+  AppError,
+  HandleApiError,
+  ValidationError,
+} from "@/lib/utils/error-handling-class";
 import { GetResponseObject } from "@/lib/utils/helper";
-import { prisma } from "@/lib/utils/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function updateModules(modules: any[]) {
   try {
@@ -22,16 +26,14 @@ export async function updateModules(modules: any[]) {
     );
     const updatedModules = await prisma.$transaction(updatePromises);
     return GetResponseObject("success", updatedModules);
-  } catch (error: any) {
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw new AppError("An unexpected error occurred.", 500);
+  } catch (e: any) {
+    throw HandleApiError(e);
   }
 }
 
 export async function updateModuleById(module: any) {
   try {
+    if (!module) throw new ValidationError("Module Data Not provided");
     const updatedModule = await prisma.module.update({
       where: {
         moduleId: module.moduleId,
@@ -40,14 +42,15 @@ export async function updateModuleById(module: any) {
         title: module.title,
       },
     });
-    return GetResponseObject("success", updateModuleById);
+    return GetResponseObject("success", updatedModule);
   } catch (e: any) {
-    throw new Error(e.message);
+    throw HandleApiError(e);
   }
 }
 
 export async function deleteModuleById(moduleId: any) {
   try {
+    if (!moduleId) throw new ValidationError("ModuleId not provided");
     const deletedModule = await prisma.module.delete({
       where: {
         moduleId: moduleId,
@@ -55,6 +58,6 @@ export async function deleteModuleById(moduleId: any) {
     });
     return GetResponseObject("success", deletedModule);
   } catch (e: any) {
-    throw new Error(e.message);
+    throw HandleApiError(e);
   }
 }

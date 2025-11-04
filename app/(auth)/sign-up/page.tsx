@@ -8,7 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 
 const userRegistrationSchema = z.object({
@@ -49,16 +49,20 @@ export default function () {
       await registerUser({ email, password });
       router.push("/api/auth/signin");
     } catch (e: any) {
+      console.log(e);
       setFormError(e.message);
     } finally {
       setStatus("Idle");
     }
   };
+
+  useEffect(() => {
+    if (session && session.status == "authenticated") {
+      router.push("/");
+    }
+  }, [session?.status, router]);
   if (session && session.status == "loading") {
     return <LoadingDisplay message="Loading" />;
-  }
-  if (session && session.status == "authenticated") {
-    router.push("/");
   }
   return (
     <div className="min-h-screen flex justify-center items-center">

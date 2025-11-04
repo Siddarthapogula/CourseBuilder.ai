@@ -1,12 +1,18 @@
 "use server";
 
-import { AppError, ValidationError } from "@/lib/utils/error-handling-class";
+import {
+  AppError,
+  HandleApiError,
+  NotFoundError,
+  ValidationError,
+} from "@/lib/utils/error-handling-class";
 import { GetResponseObject, getUserIdOrThrowError } from "@/lib/utils/helper";
-import { prisma } from "@/lib/utils/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function createCourse(courseData: any) {
   try {
     const { courseName, modules } = courseData;
+    console.log(courseData);
     if (!courseName || !modules)
       throw new ValidationError("provide courseName and Modules");
     const userId = await getUserIdOrThrowError();
@@ -27,11 +33,8 @@ export async function createCourse(courseData: any) {
       },
     });
     return GetResponseObject("success", newCourse);
-  } catch (error: any) {
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw new AppError("An unexpected error occurred.", 500);
+  } catch (e: any) {
+    throw HandleApiError(e);
   }
 }
 
@@ -47,10 +50,7 @@ export async function completeCourse(courseId: string) {
     });
     return GetResponseObject("success", updatedCourse);
   } catch (e: any) {
-    if (e instanceof AppError) {
-      throw e;
-    }
-    throw new AppError(e.message, 500);
+    throw HandleApiError(e);
   }
 }
 
@@ -68,22 +68,112 @@ export async function getCourseWithId(courseId: string) {
             questions: true,
           },
         },
+        _count: {
+          select: {
+            forks: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            image: true,
+            id: true,
+          },
+        },
       },
     });
     return GetResponseObject("success", courseData);
   } catch (e) {
-    if (e instanceof AppError) {
-      throw e;
+    throw HandleApiError(e);
+  }
+}
+
+export async function forkCourse(courseId: string) {
+  try {
+    if (!courseId) {
+      throw new ValidationError("CourseId Not provided");
     }
-    throw new AppError("Unexpected Error Occured" + e, 500);
+    const userId = await getUserIdOrThrowError();
+    const parentCourse = await prisma.course.findUnique({
+      where: {
+        courseId: courseId,
+      },
+      include: {
+        modules: true,
+        quiz: {
+          include: {
+            questions: true,
+          },
+        },
+      },
+    });
+    if (!parentCourse) {
+      throw new NotFoundError("Parent Course Not Found");
+    }
+    if (parentCourse.userId == userId) {
+      throw new ValidationError("Forking own course is not allowed");
+    }
+    const forkCount = await prisma.course.count({
+      where: {
+        userId: userId,
+        forkedFromId: parentCourse.courseId,
+      },
+    });
+    console.log("forkCount : ", forkCount);
+    if (forkCount > 0) {
+      throw new ValidationError("Forking the same course is not allowed");
+    }
+
+    const newForkedCourse = await prisma.course.create({
+      data: {
+        courseName: parentCourse.courseName,
+        userId: userId,
+        status: "DRAFT",
+        forkedFromId: parentCourse.courseId,
+        modules: {
+          create: parentCourse.modules.map((module) => ({
+            title: module.title,
+            description: module.description,
+            referenceSite: module.referenceSite,
+            referenceVideo: module.referenceVideo,
+          })),
+        },
+        quiz: parentCourse.quiz
+          ? {
+              create: {
+                tags: parentCourse.quiz.tags,
+                questions: {
+                  create: parentCourse.quiz.questions.map((q) => ({
+                    question: q.question,
+                    options: q.options,
+                    answer: q.answer,
+                    correctOptionNumber: q.correctOptionNumber,
+                  })),
+                },
+              },
+            }
+          : undefined,
+      },
+    });
+    return GetResponseObject("success", newForkedCourse);
+  } catch (e: any) {
+    throw HandleApiError(e);
   }
 }
 
 export async function getAllCourses() {
   try {
     const allCourses = await prisma.course.findMany({
+      where: {
+        forkedFromId: null,
+      },
       include: {
         modules: true,
+        _count: {
+          select: {
+            forks: true,
+          },
+        },
         quiz: {
           include: {
             questions: true,
@@ -99,9 +189,80 @@ export async function getAllCourses() {
     });
     return GetResponseObject("success", allCourses);
   } catch (e) {
-    if (e instanceof AppError) {
-      throw e;
+    throw HandleApiError(e);
+  }
+}
+
+export async function getCoursesOfUser(userIdParam?: string) {
+  try {
+    let userId;
+    if (userIdParam) {
+      userId = userIdParam;
+    } else {
+      userId = await getUserIdOrThrowError();
     }
-    throw new AppError("unexpected error occured", 500);
+    const forkedCourses = await prisma.course.findMany({
+      where: {
+        userId: userId,
+        forkedFromId: {
+          not: null,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        _count: {
+          select: {
+            forks: true,
+          },
+        },
+        modules: true,
+      },
+    });
+    const createdCourses = await prisma.course.findMany({
+      where: {
+        userId: userId,
+        forkedFromId: null,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        _count: {
+          select: {
+            forks: true,
+          },
+        },
+        modules: true,
+      },
+    });
+    return GetResponseObject("success", { forkedCourses, createdCourses });
+  } catch (e: any) {
+    throw HandleApiError(e);
+  }
+}
+
+export async function deleteCourseWithId(courseId: string) {
+  try {
+    if (!courseId) {
+      throw new ValidationError("courseid Not provided");
+    }
+    const userId = await getUserIdOrThrowError();
+    const deletedCourse = await prisma.course.delete({
+      where: {
+        courseId: courseId,
+        userId: userId,
+      },
+    });
+    return GetResponseObject("success", deletedCourse);
+  } catch (e: any) {
+    throw HandleApiError(e);
   }
 }

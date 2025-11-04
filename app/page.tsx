@@ -1,78 +1,31 @@
 import { Button } from "@/components/ui/button";
-import { Briefcase, GraduationCap, Laptop, Layers } from "lucide-react";
+import { audienceData, Features, HowItWorksData } from "@/lib/utils/constants";
+import { Layers } from "lucide-react";
 import Link from "next/link";
-
-const HowItWorksData = [
-  {
-    title: "1. Start with a Prompt",
-    data: "Enter a simple prompt, like 'a 10-module course on Digital Marketing for beginners,' and select your domain (e.g., Marketing, CS).",
-  },
-  {
-    title: "2. Validate & Refine",
-    data: "Our AI instantly generates your course outline. You have full control to edit, delete, or add module titles before generating the full content.",
-  },
-  {
-    title: "3. Generate & Export",
-    data: "With one click, AI expands your outline into detailed lessons, finds reference materials, and even builds a 10-question quiz.",
-  },
-];
-
-const Features = [
-  {
-    title: "AI-Powered Content",
-    data: "Generate high-quality, structured module descriptions, examples, and reference links (YouTube videos, articles) in seconds.",
-  },
-  {
-    title: "Automated Quiz Generation",
-    data: "Automatically create a relevant 10-question quiz for your course, complete with multiple-choice options and correct answers.",
-  },
-  {
-    title: "Domain-Aware",
-    data: "Our AI understands the context, whether you're building a course for Computer Science, Marketing, or History.",
-  },
-];
-
-const audienceData = [
-  {
-    icon: <GraduationCap className="h-6 w-6 text-primary" />,
-    title: "Professors & Lecturers",
-    description:
-      "Quickly build a new curriculum or generate supplementary materials for your existing university courses.",
-  },
-  {
-    icon: <Briefcase className="h-6 w-6 text-primary" />,
-    title: "Corporate Trainers",
-    description:
-      "Create engaging and structured training modules for employee onboarding, skill-upskilling, and internal workshops.",
-  },
-  {
-    icon: <Laptop className="h-6 w-6 text-primary" />,
-    title: "Online Tutors",
-    description:
-      "Design a complete lesson plan, from outline to quiz, to provide a professional and structured experience for your clients.",
-  },
-];
 export default function Home() {
   return (
     <div className="mt-24 p-4">
       {/* first section */}
       <main className="space-y-24 my-12">
         <section className=" container mx-auto flex min-h-[calc(100vh-10rem)] max-w-4xl flex-col items-center justify-center space-y-8 text-center">
-          <div>
-            <h1 className=" text-5xl font-medium tracking-tighter md:text-6xl  ">
-              Go from a single prompt to a complete course in minutes.
+          <div className=" animate-in fade-in slide-in-from-bottom-3 duration-900">
+            <h1 className=" text-4xl font-medium tracking-tighter md:text-6xl">
+              Go from a single prompt to a complete course in minutes
             </h1>
           </div>
-          <div>
-            <h3 className=" max-w-2xl text-lg text-muted-foreground md:text-xl  ">
+          <div className="animate-in fade-in slide-in-from-bottom-3 duration-900">
+            <h3 className=" max-w-2xl text-lg text-muted-foreground md:text-xl">
               Stop battling with slides and outlines. Just describe your course,
               and let our AI generate structured modules, detailed content, and
-              quizzes for you."
+              quizzes for you
             </h3>
           </div>
-          <div>
+          <div className="flex flex-col md:flex-row gap-2 md:gap-4 animate-in fade-in slide-in-from-bottom-3 duration-900">
             <Button className="p-6 text-lg">
               <Link href={"/course"}>Start Building Your Course</Link>
+            </Button>
+            <Button variant={"outline"} className="p-6 text-lg">
+              <Link href={"/course/all"}>See All Courses</Link>
             </Button>
           </div>
         </section>

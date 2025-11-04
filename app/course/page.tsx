@@ -1,8 +1,9 @@
 "use client";
 import { completeCourse } from "@/actions/course";
 import { BuildCourse } from "@/actions/courseBuilder";
+import { deleteModuleById, updateModuleById } from "@/actions/module";
 import LoadingDisplay from "@/components/LoadingDisplay";
-import ModuleDisplay from "@/components/ModuleDisplay";
+import ModuleMutateDisplay from "@/components/ModuleMutateDisplay";
 import QuizDisplay from "@/components/QuizDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function CourseBuilder() {
-  const [openedModuels, setOpenedModules] = useState<number[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [courseData, setCourseData] = useState<CourseData>();
@@ -27,32 +27,28 @@ export default function CourseBuilder() {
   const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [stage, setStage] = useState(1);
 
+  const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
+  const [editingModuleDraft, setEditingModuleDraft] =
+    useState<ModuleData | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const chatRef = useRef(null);
   const modulesRef = useRef<HTMLDivElement>(null);
   const quizRef = useRef(null);
 
   const router = useRouter();
 
-  function handleToggleModule(index: number) {
-    if (openedModuels.includes(index)) {
-      setOpenedModules((indexes) => indexes.filter((i) => i != index));
-    } else {
-      setOpenedModules((indexes) => [...indexes, index]);
-    }
-  }
-
   function getDataAccordingToStage() {
     if (stage == 1) {
       return "";
     } else if (stage == 2) {
       if (!courseData) return;
-      return { courseName: courseData.courseName, data: courseData.modules };
+      return { courseName: courseData.courseName, data: modulesData };
     } else {
       if (!modulesData || !courseData) return;
       return { courseName: courseData?.courseName, data: modulesData };
     }
   }
-
   useEffect(() => {
     if (stage == 3 && modulesRef.current) {
       modulesRef.current.scrollIntoView({
@@ -70,7 +66,6 @@ export default function CourseBuilder() {
         data: getDataAccordingToStage(),
         stage,
       });
-      console.log(response);
       if (!response) return;
       if (stage == 1) {
         setCourseData(response.data);
@@ -101,6 +96,53 @@ export default function CourseBuilder() {
     }
   }
 
+  async function handleEditModuleClick(module: ModuleData) {
+    if (!module) return;
+    setEditingModuleId(module.moduleId);
+    setEditingModuleDraft(module);
+    return;
+  }
+  async function handleEditSubmitModuleClick(module: ModuleData) {
+    if (!module) return;
+    if (!module.title || module.title.trim().length == 0) {
+      alert("Module title cannot be empty");
+      return;
+    }
+    setIsUpdating(true);
+    try {
+      setModulesData((prev) => {
+        return prev
+          ? prev.map((m) => (module.moduleId == m.moduleId ? module : m))
+          : prev;
+      });
+      await updateModuleById(module);
+      setEditingModuleId(null);
+      setEditingModuleDraft(null);
+    } catch (e: any) {
+      alert("failed to save Module" + e.messge);
+    } finally {
+      setIsUpdating(false);
+    }
+    return;
+  }
+  async function handleCancelEditModule() {
+    setEditingModuleDraft(null);
+    setEditingModuleId(null);
+  }
+  async function handleDeleteModuleClick(moduleId: string) {
+    if (!moduleId) return;
+    const confirmed = confirm("Are you sure you want to delete this module?");
+    if (!confirmed) return;
+    const prev = modulesData;
+    if (!prev) return;
+    setModulesData(prev.filter((m) => m.moduleId !== moduleId));
+    try {
+      await deleteModuleById(moduleId);
+    } catch (e) {
+      alert("failed to delete Module, reverting...");
+      setModulesData(prev);
+    }
+  }
   return (
     <div className=" min-h-screen py-24">
       <main className=" mx-auto max-w-4xl px-5">
@@ -108,98 +150,119 @@ export default function CourseBuilder() {
           Click on "How it Works", If you stuck
         </Badge>
         {/* ChatArea */}
-        <div ref={chatRef} className="my-2 space-y-2">
-          <h1 className=" font-medium text-foreground text-2xl">
-            Type Your Prompt Here
-          </h1>
-          <div className=" flex flex-col w-full gap-2 bg-muted rounded-md border border-input">
-            <Textarea
-              value={userPrompt}
-              onChange={(e) => {
-                setUserPrompt(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key == "Enter") {
-                  handleSubmitInput();
-                }
-              }}
-              style={{
-                outline: "none",
-                boxShadow: "none",
-                border: "none",
-              }}
-              placeholder="Give your prompt.."
-              className="resize-none w-full min-h-15 bg-transparent border-0 p-4 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <div className=" flex items-center justify-between mx-2 p-1">
-              <h1>@</h1>
-              <div>
-                <Button
-                  size={"icon"}
-                  variant={"outline"}
-                  onClick={handleSubmitInput}
-                  className={cn(
-                    " rounded-full",
-                    isLoading && "animate-pulse",
-                    "rounded-full"
-                  )}
-                  disabled={userPrompt.trim().length === 0}
-                >
-                  {isLoading ? (
-                    <Square className="fill-black" size={20} />
-                  ) : (
-                    <ArrowUp size={20} />
-                  )}
-                </Button>
+        <section>
+          <div ref={chatRef} className="my-2 space-y-2">
+            <h1 className=" font-medium text-foreground text-2xl">
+              Type Your Prompt Here
+            </h1>
+            <div className=" flex flex-col w-full gap-2 bg-muted rounded-md border border-input">
+              <Textarea
+                value={userPrompt}
+                onChange={(e) => {
+                  setUserPrompt(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    handleSubmitInput();
+                  }
+                }}
+                disabled={stage != 1}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                  border: "none",
+                }}
+                placeholder="Give your prompt.."
+                className="resize-none w-full min-h-15 bg-transparent border-0 p-4 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              <div className=" flex items-center justify-between mx-2 p-1">
+                <h1>@</h1>
+                <div>
+                  <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    onClick={handleSubmitInput}
+                    className={cn(
+                      " rounded-full",
+                      isLoading && "animate-pulse",
+                      "rounded-full"
+                    )}
+                    disabled={userPrompt.trim().length === 0 || stage != 1}
+                  >
+                    {isLoading && stage == 1 ? (
+                      <Square className="fill-black" size={20} />
+                    ) : (
+                      <ArrowUp size={20} />
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
         {/* course modules */}
         {isLoading && stage == 1 && (
           <LoadingDisplay message={"Generating course and its modules"} />
         )}
-        {modulesData && (
-          <div ref={modulesRef} className="my-2 space-y-2">
-            <h1 className=" text-2xl font-medium">
-              {courseData?.courseName}:{" "}
-            </h1>
-            <ModuleDisplay modulesData={modulesData} />
-            {stage == 2 && (
-              <>
-                <Button disabled={isLoading} onClick={handleSubmitInput}>
-                  Generate Course Modules
-                </Button>
-                {!isLoading && (
-                  <p className=" text-sm text-red-500 font-medium">
-                    Click on Generate to get the explanation of every module
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-        )}
+
+        <section>
+          {modulesData && (
+            <div ref={modulesRef} className="my-2 space-y-2">
+              <h1 className=" text-2xl font-medium">
+                {courseData?.courseName}:{" "}
+              </h1>
+              <ModuleMutateDisplay
+                isUpdating={isUpdating}
+                editingModuleId={editingModuleId}
+                editingModuleDraft={editingModuleDraft}
+                handleCancelEditModule={handleCancelEditModule}
+                handleEditModuleClick={handleEditModuleClick}
+                handleEditSubmitModuleClick={handleEditSubmitModuleClick}
+                handleDeleteModuleClick={handleDeleteModuleClick}
+                setEditingModuleDraft={setEditingModuleDraft}
+                stage={stage}
+                modulesData={modulesData}
+              />
+              {stage == 2 && (
+                <>
+                  <Button disabled={isLoading} onClick={handleSubmitInput}>
+                    Generate Course Modules
+                  </Button>
+                  {!isLoading && (
+                    <p className=" text-sm text-red-500 font-medium">
+                      Click on Generate to get the explanation of every module
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </section>
+
         {isLoading && stage == 2 && (
           <LoadingDisplay message={"Generating module Explantions"} />
         )}
 
         {/* course Quiz */}
-        <div ref={quizRef} className="my-2 space-y-2">
-          {!quizData && stage == 3 && (
-            <Button disabled={isLoading} onClick={handleSubmitInput}>
-              Generate Quiz
-            </Button>
-          )}
-          {isLoading && stage == 3 && (
-            <LoadingDisplay message={"Generating Quiz"} />
-          )}
-          {quizData && (
-            <QuizDisplay
-              courseName={courseData?.courseName as string}
-              quizData={quizData}
-            />
-          )}
-        </div>
+        <section>
+          <div ref={quizRef} className="my-2 space-y-2">
+            {!quizData && stage == 3 && (
+              <Button disabled={isLoading} onClick={handleSubmitInput}>
+                Generate Quiz
+              </Button>
+            )}
+            {isLoading && stage == 3 && (
+              <LoadingDisplay message={"Generating Quiz"} />
+            )}
+            {quizData && (
+              <QuizDisplay
+                courseName={courseData?.courseName as string}
+                quizData={quizData}
+              />
+            )}
+          </div>
+        </section>
         {quizData && (
           <div className=" flex justify-end">
             <Button onClick={handleFinalizeCourse} className="mt-4 ">

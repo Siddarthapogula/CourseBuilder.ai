@@ -15,7 +15,6 @@ datasource db {
 }
 
 model User {
-  // required for oauth.
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
@@ -70,18 +69,20 @@ model VerificationToken {
 }
 
 model Course {
-  courseId   String     @id @default(cuid())
-  userId     String
-  courseName String
-  modules    Module[]
-  quiz       Quiz?
-  references String[]
-  status     statusType
-  forks      Int        @default(0)
-  stars      Int        @default(0)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  User       User?       @relation(fields: [userId], references: [id])
+  courseId     String     @id @default(cuid())
+  userId       String
+  courseName   String
+  modules      Module[]
+  quiz         Quiz?
+  references   String[]
+  status       statusType
+  forkedFromId String?
+  forkedFrom   Course?    @relation("Forking", fields: [forkedFromId], references: [courseId], onDelete: SetNull, onUpdate: Cascade)
+  forks        Course[]   @relation("Forking")
+  stars        Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User?      @relation(fields: [userId], references: [id])
 }
 
 enum statusType {
