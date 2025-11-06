@@ -155,47 +155,40 @@ export default function CourseBuilder() {
             <h1 className=" font-medium text-foreground text-2xl">
               Type Your Prompt Here
             </h1>
-            <div className=" flex flex-col w-full gap-2 bg-muted rounded-md border border-input">
+            <div className="flex flex-col w-full gap-2 bg-muted rounded-md border border-input">
               <Textarea
                 value={userPrompt}
-                onChange={(e) => {
-                  setUserPrompt(e.target.value);
-                }}
+                onChange={(e) => setUserPrompt(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key == "Enter") {
-                    handleSubmitInput();
-                  }
+                  if (e.key === "Enter") handleSubmitInput();
                 }}
-                disabled={stage != 1}
+                disabled={stage !== 1}
+                placeholder="Give your prompt.."
+                className="resize-none w-full min-h-15 p-4 text-sm placeholder:text-muted-foreground
+               focus-visible:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
                 style={{
                   outline: "none",
                   boxShadow: "none",
                   border: "none",
+                  background : 'inherit'
                 }}
-                placeholder="Give your prompt.."
-                className="resize-none w-full min-h-15 bg-transparent border-0 p-4 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <div className=" flex items-center justify-between mx-2 p-1">
+              <div className="flex items-center justify-between px-4 pb-3">
                 <h1>@</h1>
-                <div>
-                  <Button
-                    size={"icon"}
-                    variant={"outline"}
-                    onClick={handleSubmitInput}
-                    className={cn(
-                      " rounded-full",
-                      isLoading && "animate-pulse",
-                      "rounded-full"
-                    )}
-                    disabled={userPrompt.trim().length === 0 || stage != 1}
-                  >
-                    {isLoading && stage == 1 ? (
-                      <Square className="fill-black" size={20} />
-                    ) : (
-                      <ArrowUp size={20} />
-                    )}
-                  </Button>
-                </div>
+
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={handleSubmitInput}
+                  className={cn("rounded-full", isLoading && "animate-pulse")}
+                  disabled={userPrompt.trim().length === 0 || stage !== 1}
+                >
+                  {isLoading && stage === 1 ? (
+                    <Square className="fill-black" size={20} />
+                  ) : (
+                    <ArrowUp size={20} />
+                  )}
+                </Button>
               </div>
             </div>
           </div>

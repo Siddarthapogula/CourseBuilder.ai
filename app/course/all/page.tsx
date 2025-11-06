@@ -1,10 +1,11 @@
 import { getAllCourses } from "@/actions/course";
 import CourseCard from "@/components/CourseCard";
-import LoadingDisplay from "@/components/LoadingDisplay";
 import { Button } from "@/components/ui/button";
 import { CourseData } from "@/lib/utils/types";
 import Link from "next/link";
 
+
+export const dynamic = "force-dynamic";
 export default async function AllCourses() {
   const { data }: { data: CourseData[] } = await getAllCourses();
   return (

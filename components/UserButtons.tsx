@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { signOut, useSession } from "next-auth/react";
+import { ModeToggle } from "./ModeToggle";
 
 export default function UserButtons() {
   const { data } = useSession();
   return (
-    <div className=" flex gap-6">
+    <div className=" flex gap-2">
       {data?.user ? (
         <div className=" flex gap-1 md:gap-3 items-center">
           <Link href={`/profile`}>
@@ -24,7 +25,12 @@ export default function UserButtons() {
               <User className=" w-6 h-6" />
             )}
           </Link>
-          <Button onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
+          <Button
+            className=" hidden md:block"
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
+            Logout
+          </Button>
         </div>
       ) : (
         <div className=" flex gap-3">
@@ -36,6 +42,9 @@ export default function UserButtons() {
           </Link>
         </div>
       )}
+      <div className=" hidden md:block">
+        <ModeToggle />{" "}
+      </div>
     </div>
   );
 }

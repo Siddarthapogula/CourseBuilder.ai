@@ -1,0 +1,3 @@
+- sketch the use cases of state management.
+- tanstack query, where it is used?
+- p

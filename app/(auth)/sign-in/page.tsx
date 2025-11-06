@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { Layers } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -81,12 +82,13 @@ export default function () {
   }
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <div className=" p-4 bg-muted rounded-md">
-        <h1 className=" text-lg font-medium text-center underline">
-          Sign In To CourseBuilder.Ai
-        </h1>
+      <div className="p-4 py-8 bg-muted rounded-md">
+        <div className=" flex justify-center space-y-2 pb-4 gap-2">
+          <span className=" text-xl font-medium text-center">Sign In</span>
+          <Layers />
+        </div>
         <form className=" space-y-2 min-w-md p-2" onSubmit={handleLogin}>
-          <div>
+          <div className=" space-y-2">
             <Label className=" text-md">Email</Label>
             <Input
               value={email}
@@ -96,7 +98,7 @@ export default function () {
             />
             <p className=" text-red-600">{error.email}</p>
           </div>
-          <div>
+          <div className=" space-y-2">
             <Label className=" text-md">Password</Label>
             <Input
               value={password}
@@ -120,7 +122,7 @@ export default function () {
             </Button>
           </div>
           <p className=" text-red-600">{formError}</p>
-          <div>
+          <div className=" space-y-2">
             <p>
               don't have account?{" "}
               <Link className=" underline" href={"/sign-up"}>

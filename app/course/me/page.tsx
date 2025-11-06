@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { CourseData } from "@/lib/utils/types";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function MyCourses() {
   const { data } = await getCoursesOfUser();
   const { forkedCourses, createdCourses }: any = data;

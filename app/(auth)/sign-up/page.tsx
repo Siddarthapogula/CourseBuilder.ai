@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { Layers } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -66,12 +67,15 @@ export default function () {
   }
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <div className=" p-4 bg-muted rounded-md">
-        <h1 className=" text-lg font-medium text-center underline">
-          Sign Up To CourseBuilder.Ai
-        </h1>
+      <div className=" p-4 py-8 bg-muted rounded-md ">
+        <div className=" flex flex-col">
+          <div className=" flex justify-center space-y-2 pb-4 gap-2">
+            <span className=" text-xl font-medium text-center">Sign Up</span>
+            <Layers />
+          </div>
+        </div>
         <form className=" space-y-2 min-w-md p-2" onSubmit={handleRegister}>
-          <>
+          <div className=" space-y-2">
             <Label className=" text-md">Email</Label>
             <Input
               value={email}
@@ -80,8 +84,8 @@ export default function () {
               placeholder="hello@example.com"
             />
             <p className=" text-red-600">{error.email}</p>
-          </>
-          <>
+          </div>
+          <div className="space-y-2">
             <Label className=" text-md">Password</Label>
             <Input
               value={password}
@@ -90,20 +94,20 @@ export default function () {
               placeholder="password"
             />
             <p className=" text-red-600">{error.password}</p>
-          </>
+          </div>
           <Button disabled={status == "Submitting"}>
             {status == "Submitting" && <Spinner />}
             {status == "Idle" ? "Register" : "Submitting"}
           </Button>
           <p className=" text-red-600">{formError}</p>
-          <>
+          <div className=" spacey-2">
             <p>
               have account already?{" "}
               <Link className=" underline" href={"/api/auth/signin"}>
                 Login
               </Link>
             </p>
-          </>
+          </div>
         </form>
       </div>
     </div>

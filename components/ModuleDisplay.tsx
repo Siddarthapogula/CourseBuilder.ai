@@ -52,7 +52,7 @@ export default function ModuleDisplay({ modulesData }: ModuleDisplayProps) {
                   </div>
                 </CardTitle>
                 {displayedDiscription != "" && (
-                  <p className="text-md text-gray-700 leading-relaxed whitespace-pre-line">
+                  <p className="text-md text-muted-foreground leading-relaxed whitespace-pre-line">
                     {displayedDiscription}
                   </p>
                 )}

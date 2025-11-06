@@ -35,7 +35,7 @@ export async function BuildCourse({
       contents: prompt as string,
     });
     if (!response.text)
-      throw new AiError("No text found from genai generation");
+      throw new AiError("No text generated from from genai generation");
     const cleaned = response?.text.replace(
       /```(?:json)?\s*([\s\S]*?)```/g,
       "$1"

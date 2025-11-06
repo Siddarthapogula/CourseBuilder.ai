@@ -148,3 +148,5 @@ html {
 .nav-item-underline-animation{
   @apply relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-current after:origin-left after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100
 }
+
+
