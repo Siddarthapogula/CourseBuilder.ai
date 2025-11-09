@@ -10,6 +10,7 @@ import QuizDisplay from "@/components/QuizDisplay";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { CourseData } from "@/lib/utils/types";
+import { useQuery } from "@tanstack/react-query";
 import { GitFork, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -29,21 +30,26 @@ async function getCourseDetailsWithId(courseId: string) {
 }
 
 export default function CourseWithId({ params }: any) {
-  const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const { data }: any = useSession();
   const router = useRouter();
   const courseId = usePathname().split("/")[2];
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["Course", courseId],
+    queryFn: () => getCourseDetailsWithId(courseId),
+  });
 
-  useEffect(() => {
-    getCourseDetailsWithId(courseId).then((data) => {
-      setCourseData(data);
-    });
-  }, [courseId]);
-  if (!courseData) {
-    return <LoadingDisplay message="fetcing the course Data" />;
+  if (isError && !isLoading) {
+    return <h1 className=" py-24">Error</h1>;
   }
-
+  if (isLoading) {
+    return (
+      <div className=" py-24 mx-auto container max-2-2xl md:max-w-4xl">
+        {" "}
+        <LoadingDisplay message="Just a sec" />{" "}
+      </div>
+    );
+  }
+  const courseData = data;
   const handleForkClick = async (courseId: string) => {
     const wantToFork = confirm(
       `Are you sure want to fork course : ${courseData.courseName}`

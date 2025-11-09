@@ -81,58 +81,70 @@ export default function () {
     return <LoadingDisplay message="Loading" />;
   }
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="p-4 py-8 bg-muted rounded-md">
-        <div className=" flex justify-center space-y-2 pb-4 gap-2">
-          <span className=" text-xl font-medium text-center">Sign In</span>
-          <Layers />
-        </div>
-        <form className=" space-y-2 min-w-md p-2" onSubmit={handleLogin}>
-          <div className=" space-y-2">
-            <Label className=" text-md">Email</Label>
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="text"
-              placeholder="hello@example.com"
-            />
-            <p className=" text-red-600">{error.email}</p>
+    <div className="min-h-screen py-16 px-4 flex items-center">
+      <main className="w-full max-w-md mx-auto">
+        <div className="bg-muted p-6 rounded-lg shadow-sm">
+          {/* Header */}
+          <div className="flex justify-center items-center gap-2 pb-4">
+            <span className="text-2xl font-semibold">Sign In</span>
+            <Layers />
           </div>
-          <div className=" space-y-2">
-            <Label className=" text-md">Password</Label>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="password"
-            />
-            <p className=" text-red-600">{error.password}</p>
-          </div>
-          <div className=" flex gap-3">
-            <Button onClick={handleLogin} disabled={status == "Submitting"}>
-              {status == "Submitting" && <Spinner />}
-              {status == "Idle" ? "Sign In" : "Submitting"}
-            </Button>
-            <Button
-              onClick={handleGoogleSignIn}
-              variant={"destructive"}
-              disabled={status == "Submitting"}
-            >
-              Continue with Google
-            </Button>
-          </div>
-          <p className=" text-red-600">{formError}</p>
-          <div className=" space-y-2">
-            <p>
-              don't have account?{" "}
-              <Link className=" underline" href={"/sign-up"}>
+
+          {/* Form */}
+          <form className="space-y-4" onSubmit={handleLogin}>
+            <div className="space-y-1">
+              <Label>Email</Label>
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="hello@example.com"
+              />
+              <p className="text-red-600 text-sm">{error.email}</p>
+            </div>
+
+            <div className="space-y-1">
+              <Label>Password</Label>
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="password"
+              />
+              <p className="text-red-600 text-sm">{error.password}</p>
+            </div>
+
+            <div className="space-y-3">
+              <Button
+                className="w-full"
+                onClick={handleLogin}
+                disabled={status === "Submitting"}
+              >
+                {status === "Submitting" && <Spinner />}
+                {status === "Idle" ? "Sign In" : "Submitting"}
+              </Button>
+
+              <Button
+                className="w-full"
+                onClick={handleGoogleSignIn}
+                variant="destructive"
+                disabled={status === "Submitting"}
+              >
+                Continue with Google
+              </Button>
+            </div>
+
+            <p className="text-red-600 text-sm">{formError}</p>
+
+            <p className="text-center text-sm">
+              Don’t have an account?{" "}
+              <Link className="underline" href="/sign-up">
                 Sign Up
-              </Link>{" "}
-              with Credentials
+              </Link>
             </p>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      </main>
     </div>
   );
 }

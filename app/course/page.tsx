@@ -162,7 +162,7 @@ export default function CourseBuilder() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSubmitInput();
                 }}
-                disabled={stage !== 1}
+                disabled={stage !== 1 || isLoading}
                 placeholder="Give your prompt.."
                 className="resize-none w-full min-h-15 p-4 text-sm placeholder:text-muted-foreground
                focus-visible:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
@@ -170,7 +170,7 @@ export default function CourseBuilder() {
                   outline: "none",
                   boxShadow: "none",
                   border: "none",
-                  background : 'inherit'
+                  background: "inherit",
                 }}
               />
               <div className="flex items-center justify-between px-4 pb-3">

@@ -1,14 +1,31 @@
+"use client";
 import { getCoursesOfUser } from "@/actions/course";
 import CourseCard from "@/components/CourseCard";
+import LoadingDisplay from "@/components/LoadingDisplay";
 import { Button } from "@/components/ui/button";
 import { CourseData } from "@/lib/utils/types";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
-export default async function MyCourses() {
-  const { data } = await getCoursesOfUser();
-  const { forkedCourses, createdCourses }: any = data;
+export default function MyCourses() {
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["MyCourses"],
+    queryFn: () => getCoursesOfUser(),
+    staleTime: 3 * 60 * 1000,
+  });
+  if (isError && !isLoading) {
+    return <h1 className=" py-24">Error</h1>;
+  }
+  if (isLoading) {
+    return (
+      <div className=" py-24 mx-auto container max-2-2xl md:max-w-4xl">
+        {" "}
+        <LoadingDisplay message="fetching your courses" />{" "}
+      </div>
+    );
+  }
+  const myCoursesData = data?.data;
+  const { forkedCourses, createdCourses }: any = myCoursesData;
   return (
     <div className=" min-h-screen py-24">
       <main className=" mx-auto w-full max-w-4xl px-5 space-y-2">

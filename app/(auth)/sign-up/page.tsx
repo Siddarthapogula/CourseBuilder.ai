@@ -66,48 +66,51 @@ export default function () {
     return <LoadingDisplay message="Loading" />;
   }
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className=" p-4 py-8 bg-muted rounded-md ">
-        <div className=" flex flex-col">
-          <div className=" flex justify-center space-y-2 pb-4 gap-2">
-            <span className=" text-xl font-medium text-center">Sign Up</span>
-            <Layers />
-          </div>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-muted p-6 rounded-lg shadow-sm">
+        {/* Header */}
+        <div className="flex justify-center items-center gap-2 pb-4">
+          <span className="text-2xl font-semibold">Sign Up</span>
+          <Layers />
         </div>
-        <form className=" space-y-2 min-w-md p-2" onSubmit={handleRegister}>
-          <div className=" space-y-2">
-            <Label className=" text-md">Email</Label>
+
+        {/* Form */}
+        <form className="space-y-4" onSubmit={handleRegister}>
+          <div className="space-y-1">
+            <Label>Email</Label>
             <Input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              type="text"
+              type="email"
               placeholder="hello@example.com"
             />
-            <p className=" text-red-600">{error.email}</p>
+            <p className="text-red-600 text-sm">{error.email}</p>
           </div>
-          <div className="space-y-2">
-            <Label className=" text-md">Password</Label>
+
+          <div className="space-y-1">
+            <Label>Password</Label>
             <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="password"
             />
-            <p className=" text-red-600">{error.password}</p>
+            <p className="text-red-600 text-sm">{error.password}</p>
           </div>
-          <Button disabled={status == "Submitting"}>
-            {status == "Submitting" && <Spinner />}
-            {status == "Idle" ? "Register" : "Submitting"}
+
+          <Button disabled={status === "Submitting"} className="w-full">
+            {status === "Submitting" && <Spinner />}
+            {status === "Idle" ? "Register" : "Submitting"}
           </Button>
-          <p className=" text-red-600">{formError}</p>
-          <div className=" spacey-2">
-            <p>
-              have account already?{" "}
-              <Link className=" underline" href={"/api/auth/signin"}>
-                Login
-              </Link>
-            </p>
-          </div>
+
+          <p className="text-red-600 text-sm">{formError}</p>
+
+          <p className="text-sm text-center">
+            Already have an account?{" "}
+            <Link className="underline" href="/api/auth/signin">
+              Login
+            </Link>
+          </p>
         </form>
       </div>
     </div>

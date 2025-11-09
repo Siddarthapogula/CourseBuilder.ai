@@ -68,7 +68,7 @@ export default function ModuleMutateDisplay({
           <Card key={module?.moduleId} className=" bg-muted shadow-sm">
             {
               <CardContent>
-                <CardTitle className=" text-lg my-2 flex justify-between font-medium text-gray-800">
+                <CardTitle className=" text-lg my-2 flex justify-between font-medium text-shadow-muted-foreground">
                   <div className=" flex gap-2 items-center">
                     <span>
                       {modulesData.indexOf(module) + 1}
@@ -136,7 +136,7 @@ export default function ModuleMutateDisplay({
                   )}
                 </CardTitle>
                 {displayedDiscription != "" && (
-                  <p className="text-md text-gray-700 leading-relaxed whitespace-pre-line">
+                  <p className="text-md text-muted-foreground leading-relaxed whitespace-pre-line">
                     {displayedDiscription}
                   </p>
                 )}
