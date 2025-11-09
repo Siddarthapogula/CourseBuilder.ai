@@ -13,7 +13,6 @@ export default function AllCourses() {
     queryFn: getAllCourses,
     staleTime: 3 * 60 * 1000,
   });
-  console.log(isLoading, isError);
   const courseData = data?.data;
   return (
     <div className="min-h-screen py-24">
