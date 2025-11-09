@@ -53,11 +53,11 @@ export default function CourseCard({ course }: { course: CourseData }) {
             </Badge>
           )}
         </div>
-        <CardTitle onClick={() => router.push(`${course.courseId}`)}>
+        <CardTitle onClick={() => router.push(`/course/${course.courseId}`)}>
           {course.courseName}
         </CardTitle>
       </CardHeader>
-      <CardContent onClick={() => router.push(`${course.courseId}`)}>
+      <CardContent onClick={() => router.push(`/course/${course.courseId}`)}>
         <p className="text-muted-foreground">
           {course.modules.length > 0 ? course.modules[0].title : ""}
         </p>

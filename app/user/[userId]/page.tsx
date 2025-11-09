@@ -1,3 +1,4 @@
+"use client";
 import { getCoursesOfUser } from "@/actions/course";
 import { getUserDetails } from "@/actions/user";
 import CourseCard from "@/components/CourseCard";
@@ -6,22 +7,40 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseData, UserData } from "@/lib/utils/types";
+import { useQuery } from "@tanstack/react-query";
 import { User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export default async function UserCourses({ params }: any) {
-  const { userId }: { userId: string } = await params;
-  const response = await getUserDetails(userId);
-  const userData: UserData = response.data;
+export default function UserCourses() {
+  const userId = usePathname().split("/")[2];
   const {
-    data,
-  }: { data: { forkedCourses: CourseData[]; createdCourses: CourseData[] } } =
-    await getCoursesOfUser(userId);
-  const { forkedCourses, createdCourses } = data;
-  if (!forkedCourses || !createdCourses) {
-    return <LoadingDisplay message="fetching user's courses" />;
+    data: userDataresponse,
+    isError: userDataError,
+    isLoading: userDataLoading,
+  } = useQuery({
+    queryKey: ["User", userId],
+    queryFn: () => getUserDetails(userId),
+    staleTime: 3 * 60 * 1000,
+  });
+  const userData = userDataresponse?.data;
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["UserCourses"],
+    queryFn: () => getCoursesOfUser(userId),
+  });
+  if (isError && !isLoading) {
+    return <h1 className=" py-24">Error</h1>;
   }
+  if (isLoading) {
+    return (
+      <div className=" py-24 mx-auto container max-2-2xl md:max-w-4xl">
+        {" "}
+        <LoadingDisplay message="fetching User Details" />{" "}
+      </div>
+    );
+  }
+  const { forkedCourses, createdCourses }: any = data?.data;
   const userName =
     forkedCourses?.length > 0
       ? forkedCourses[0]?.user?.name
@@ -33,10 +52,10 @@ export default async function UserCourses({ params }: any) {
       <main className="mx-auto w-full max-w-4xl px-5 space-y-2">
         {!userName && <h1>No Courses Found from the user.</h1>}
         <section className=" space-y-4">
-          {userData?.name != "" && (
+          {userName && (
             <div className=" flex gap-4  items-center">
               <div>
-                {userData.image ? (
+                {userData?.image ? (
                   <Image
                     className="  w-12 h-12 rounded-full border"
                     width={76}
