@@ -64,6 +64,17 @@ export async function BuildCourse({
       );
     }
   } catch (e: any) {
+    // some how need to fix it in more correct way 
+    if (
+      e.message &&
+      (e.message.includes("503") ||
+        e.message.includes("UNAVAILABLE") ||
+        e.message.includes("overloaded"))
+    ) {
+      throw new AiError(
+        "The AI model is currently overloaded. Please try again in a moment."
+      );
+    }
     throw HandleApiError(e);
   }
 }
