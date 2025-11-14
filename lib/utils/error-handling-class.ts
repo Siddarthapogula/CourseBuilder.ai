@@ -37,7 +37,6 @@ export function HandleApiError(e: any): AppError {
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
     switch (e.code) {
       case "P2002":
-        console.log(e.meta);
         const target = (e.meta?.target as string[])?.join(",") || "resource";
         return new AppError(`This ${target} already exists.`, 400);
       case "P2025":

@@ -1,5 +1,5 @@
 "use client";
-import { getCoursesOfUser } from "@/actions/course";
+import { forkCourse, getCoursesOfUser } from "@/actions/course";
 import { getUserDetails } from "@/actions/user";
 import CourseCard from "@/components/CourseCard";
 import LoadingDisplay from "@/components/LoadingDisplay";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseData, UserData } from "@/lib/utils/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,9 +26,29 @@ export default function UserCourses() {
   });
   const userData = userDataresponse?.data;
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["UserCourses"],
+    queryKey: ["UserCourses", userId],
     queryFn: () => getCoursesOfUser(userId),
   });
+  const queryClient = useQueryClient();
+  const { mutate: forkMutation, isPending: isForking } = useMutation({
+    mutationFn: forkCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["UserCourses", userId] });
+      queryClient.invalidateQueries({ queryKey: ["MyCourses"] });
+    },
+    onError: (e: any) => {
+      console.log("forking unsuccessful", e.message);
+      alert("Failed to fork" + e.message);
+    },
+  });
+
+  const handleForkClick = (courseId: string) => {
+    const confirmed = confirm("Are you sure you want to fork?");
+    if (!confirmed) return;
+    forkMutation(courseId);
+    return;
+  };
+
   if (isError && !isLoading) {
     return <h1 className=" py-24">Error</h1>;
   }
@@ -110,7 +130,10 @@ export default function UserCourses() {
             (createdCourses as any[]).map((course: CourseData) => {
               return (
                 <div key={course.courseId}>
-                  <CourseCard course={course} />{" "}
+                  <CourseCard
+                    handleForkClick={handleForkClick}
+                    course={course}
+                  />{" "}
                 </div>
               );
             })
@@ -131,7 +154,10 @@ export default function UserCourses() {
             (forkedCourses as any[]).map((course: CourseData) => {
               return (
                 <div key={course.courseId}>
-                  <CourseCard course={course} />{" "}
+                  <CourseCard
+                    handleForkClick={handleForkClick}
+                    course={course}
+                  />{" "}
                 </div>
               );
             })

@@ -35,7 +35,7 @@ export default function MyCourses() {
             (createdCourses as any[]).map((course: CourseData) => {
               return (
                 <div key={course.courseId}>
-                  <CourseCard course={course} />{" "}
+                  <CourseCard handleForkClick={() => null} course={course} />{" "}
                 </div>
               );
             })
@@ -56,7 +56,7 @@ export default function MyCourses() {
             (forkedCourses as any[]).map((course: CourseData) => {
               return (
                 <div key={course.courseId}>
-                  <CourseCard course={course} />{" "}
+                  <CourseCard handleForkClick={() => null} course={course} />{" "}
                 </div>
               );
             })

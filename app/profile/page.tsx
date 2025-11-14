@@ -83,7 +83,7 @@ export default function Profile() {
       const { data } = await getUserDetails();
       setUserData(data);
     } catch (e: any) {
-      console.log(e);
+      console.log("getting userdetails unsuccessfull", e.message);
       alert("error while fetching user" + e.message);
     }
   };

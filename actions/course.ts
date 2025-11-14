@@ -12,7 +12,6 @@ import { prisma } from "@/lib/prisma";
 export async function createCourse(courseData: any) {
   try {
     const { courseName, modules } = courseData;
-    console.log(courseData);
     if (!courseName || !modules)
       throw new ValidationError("provide courseName and Modules");
     const userId = await getUserIdOrThrowError();
@@ -119,7 +118,6 @@ export async function forkCourse(courseId: string) {
         forkedFromId: parentCourse.courseId,
       },
     });
-    console.log("forkCount : ", forkCount);
     if (forkCount > 0) {
       throw new ValidationError("Forking the same course is not allowed");
     }

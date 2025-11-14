@@ -1,10 +1,15 @@
-- /course ai generation error, need to fix it, and show the user what exactly failing and resolving method.
-- ui changes, need to look good and user friendly on mobiles too.
-    -> add side bar for mobile friendly.
-    -> show module details correctly
+
+done
 - course/courseid 
     -> delete fix
     -> make ui good
+    -> once the course is deleted in the course/courseid-> update the ui, with updated courses.
+    - /course ai generation error, need to fix it, and show the user what exactly failing and resolving method.
+
+
+- ui changes, need to look good and user friendly on mobiles too.
+    -> add side bar for mobile friendly.
+    -> show module details correctly
 -> course/all
     -> pagination, and see why the api is taking lot of time.
 
@@ -20,6 +25,8 @@
     -> forget pass feature, email generation thing explore this. how we can add this.
     -> make authentication more robust.
 
+--> forked courses can be edited as the created course can also be edited.
+    with ai and manual edit too.
 -> pricing.
     -> learn how to add pricing.
     -> for one course we need to deduct 1 credit from the user. 
