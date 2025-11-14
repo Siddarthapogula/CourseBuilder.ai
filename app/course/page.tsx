@@ -145,9 +145,13 @@ export default function CourseBuilder() {
   }
   return (
     <div className=" min-h-screen py-24">
-      <main className=" mx-auto max-w-4xl px-5">
-        <Badge variant={"outline"} className="p-2 text-sm">
+      <main className=" mx-auto max-w-4xl px-5 flex flex-col gap-2">
+        <Badge variant={"outline"} className="p-2 text-xs">
           Click on "How it Works", If you stuck
+        </Badge>
+        <Badge variant={"outline"} className="p-2 text-xs">
+          Facing some issue with AI api, If you get error like overload just
+          retry. Trying hard to resolve this soon..
         </Badge>
         {/* ChatArea */}
         <section>
@@ -202,7 +206,7 @@ export default function CourseBuilder() {
         <section>
           {modulesData && (
             <div ref={modulesRef} className="my-2 space-y-2">
-              <h1 className=" text-2xl font-medium">
+              <h1 className=" text-xl md:text-2xl font-medium">
                 {courseData?.courseName}:{" "}
               </h1>
               <ModuleMutateDisplay

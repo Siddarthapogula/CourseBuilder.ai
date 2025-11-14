@@ -159,11 +159,20 @@ export async function forkCourse(courseId: string) {
   }
 }
 
-export async function getAllCourses() {
+export async function getAllCourses(
+  searchTerm: string = "",
+  curpage: number = 0
+) {
   try {
     const allCourses = await prisma.course.findMany({
+      skip: 10 * curpage,
+      take: 10,
       where: {
         forkedFromId: null,
+        courseName: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
       },
       include: {
         modules: true,

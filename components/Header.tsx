@@ -10,7 +10,7 @@ export default async function Header() {
       className=" fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50 
      supports-backdrop-filter:bg-background/60 "
     >
-      <nav className=" flex justify-between px-4 md:px-6 lg:px-8 py-4 items-center">
+      <nav className=" flex justify-between px-5 md:px-7 lg:px-9 py-4 items-center">
         <Link href="/" className="flex items-center gap-2">
           <Layers className="h-5 w-5" />
           <span className="text-lg font-medium">CourseBuilder AI</span>

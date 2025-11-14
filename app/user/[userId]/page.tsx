@@ -106,7 +106,7 @@ export default function UserCourses() {
               <Label>Organization </Label>
               <Textarea
                 disabled={true}
-                className=" resize-none bg-muted md:col-span-2"
+                className=" resize-none text-sm bg-muted md:col-span-2"
                 value={userData?.organization}
               />
             </div>
@@ -116,7 +116,7 @@ export default function UserCourses() {
               <Label>About</Label>
               <Textarea
                 disabled={true}
-                className=" resize-none bg-muted md:col-span-2"
+                className=" resize-none text-sm bg-muted md:col-span-2"
                 value={userData?.about}
               />
             </div>
