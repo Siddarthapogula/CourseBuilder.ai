@@ -1,18 +1,39 @@
 "use client";
-import { getAllCourses } from "@/actions/course";
+import { forkCourse, getAllCourses } from "@/actions/course";
 import CourseCard from "@/components/CourseCard";
 import LoadingDisplay from "@/components/LoadingDisplay";
 import { Button } from "@/components/ui/button";
 import { CourseData } from "@/lib/utils/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
 export default function AllCourses() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["courseDataInAll"],
     queryFn: getAllCourses,
-    staleTime: 3 * 60 * 1000,
   });
+  const queryClient = useQueryClient();
+  const { mutate: forkMutation, isPending: isForking } = useMutation({
+    mutationFn: forkCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["courseDataInAll"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["MyCourses"],
+      });
+    },
+    onError: (e: any) => {
+      console.log("forking unsuccessful", e.message);
+      alert("Failed to fork" + e.message);
+    },
+  });
+
+  const handleForkClick = async (courseId: string) => {
+    const wantToFork = confirm(`Are you sure want to fork course`);
+    if (!wantToFork) return;
+    forkMutation(courseId);
+  };
   const courseData = data?.data;
   return (
     <div className="min-h-screen py-24">
@@ -29,7 +50,10 @@ export default function AllCourses() {
                 courseData.map((course: CourseData) => {
                   return (
                     <div key={course.courseId}>
-                      <CourseCard course={course} />{" "}
+                      <CourseCard
+                        handleForkClick={handleForkClick}
+                        course={course}
+                      />{" "}
                     </div>
                   );
                 })

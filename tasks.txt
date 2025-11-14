@@ -1,3 +1,32 @@
-- sketch the use cases of state management.
-- tanstack query, where it is used?
-- p
+
+done
+- course/courseid 
+    -> delete fix
+    -> make ui good
+    -> once the course is deleted in the course/courseid-> update the ui, with updated courses.
+    - /course ai generation error, need to fix it, and show the user what exactly failing and resolving method.
+
+
+- ui changes, need to look good and user friendly on mobiles too.
+    -> add side bar for mobile friendly.
+    -> show module details correctly
+-> course/all
+    -> pagination, and see why the api is taking lot of time.
+
+-> need to add the feature(domain aware course generation, with this it is easy to get the tags for every course)
+    -> get the tags & store
+    -> course/all + course/me -> add search and filter feature.
+
+
+-> see how we can cache the same prompts from the user ( so that no need of generating course from scratch by model.)
+
+-> auth fixes. -> 
+    -> google then no pass or store a unique pass for every one??
+    -> forget pass feature, email generation thing explore this. how we can add this.
+    -> make authentication more robust.
+
+--> forked courses can be edited as the created course can also be edited.
+    with ai and manual edit too.
+-> pricing.
+    -> learn how to add pricing.
+    -> for one course we need to deduct 1 credit from the user. 

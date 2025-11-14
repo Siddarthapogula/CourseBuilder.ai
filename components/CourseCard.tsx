@@ -10,23 +10,19 @@ import {
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { forkCourse } from "@/actions/course";
 import { CourseData } from "@/lib/utils/types";
 import { Badge } from "./ui/badge";
+import { useSession } from "next-auth/react";
 
-export default function CourseCard({ course }: { course: CourseData }) {
+export default function CourseCard({
+  course,
+  handleForkClick,
+}: {
+  course: CourseData;
+  handleForkClick: (courseId: string) => void;
+}) {
   const router = useRouter();
-  const handleForkClick = async (courseId: string) => {
-    const wantToFork = confirm(
-      `Are you sure want to fork course : ${course.courseName}`
-    );
-    if (!wantToFork) return;
-    try {
-      await forkCourse(courseId);
-    } catch (e: any) {
-      console.log(e.message);
-    }
-  };
+  const { data }: any = useSession();
   return (
     <Card key={course?.courseId} className=" cursor-pointer">
       <CardHeader>
@@ -67,6 +63,7 @@ export default function CourseCard({ course }: { course: CourseData }) {
           onClick={() => handleForkClick(course.courseId)}
           className=""
           variant={"outline"}
+          disabled={data?.user?.id == course.userId}
         >
           <div className="flex items-center space-x-2">
             <GitFork className="h-4 w-4 text-muted-foreground" />

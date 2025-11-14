@@ -9,9 +9,9 @@ import { ModeToggle } from "./ModeToggle";
 export default function UserButtons() {
   const { data } = useSession();
   return (
-    <div className=" flex gap-2">
+    <div className=" hidden md:flex gap-2">
       {data?.user ? (
-        <div className=" flex gap-1 md:gap-3 items-center">
+        <div className=" flex md:gap-2 lg:gap-3 items-center">
           <Link href={`/profile`}>
             {data.user.image ? (
               <Image
@@ -25,12 +25,7 @@ export default function UserButtons() {
               <User className=" w-6 h-6" />
             )}
           </Link>
-          <Button
-            className=" hidden md:block"
-            onClick={() => signOut({ callbackUrl: "/" })}
-          >
-            Logout
-          </Button>
+          <Button onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
         </div>
       ) : (
         <div className=" flex gap-3">
@@ -42,9 +37,7 @@ export default function UserButtons() {
           </Link>
         </div>
       )}
-      <div className=" hidden md:block">
-        <ModeToggle />{" "}
-      </div>
+      <ModeToggle />{" "}
     </div>
   );
 }
