@@ -40,9 +40,9 @@ export default function CourseWithId({ params }: any) {
   const { mutate: deleteMutation, isPending: isDeleting } = useMutation({
     mutationFn: deleteCourseWithId,
     onSuccess: () => {
-      router.push("/course/me");
       queryClient.removeQueries({ queryKey: ["Course", courseId] });
       queryClient.invalidateQueries({ queryKey: ["MyCourses"] });
+      router.push("/course/me");
     },
     onError: (e: any) => {
       console.log("deletion unsuccessful", e.message);
@@ -71,7 +71,6 @@ export default function CourseWithId({ params }: any) {
       alert("Failed to fork" + e.message);
     },
   });
-
   if (isError && !isLoading) {
     return <h1 className=" py-24">Error</h1>;
   }

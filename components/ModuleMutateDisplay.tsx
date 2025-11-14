@@ -54,8 +54,8 @@ export default function ModuleMutateDisplay({
     });
   };
   return (
-    <div className=" space-y-2">
-      {modulesData.map((module: ModuleData) => {
+    <div className="space-y-2">
+      {modulesData.map((module: ModuleData, index: number) => {
         const isExpanded = expandedModules.has(module.moduleId);
         const isLongDescription =
           module?.description &&
@@ -64,100 +64,117 @@ export default function ModuleMutateDisplay({
           isExpanded || !isLongDescription
             ? module?.description
             : `${module.description?.substring(0, descriptionCharLimit)}...`;
+
         return (
-          <Card key={module?.moduleId} className=" bg-muted shadow-sm">
-            {
-              <CardContent>
-                <CardTitle className=" text-lg my-2 flex justify-between font-medium text-shadow-muted-foreground">
-                  <div className=" flex gap-2 items-center">
-                    <span>
-                      {modulesData.indexOf(module) + 1}
-                      {". "}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      {module.moduleId == editingModuleId ? (
-                        <Input
-                          value={editingModuleDraft?.title ?? module.title}
-                          onChange={(e) =>
-                            setEditingModuleDraft({
-                              ...(editingModuleDraft ?? module),
-                              title: e.target.value,
-                            })
-                          }
-                          className=" min-w-sm md:min-w-lg text-lg border-b bg-white p-1 placeholder:italic placeholder:text-muted-foreground"
-                          placeholder="Module title"
-                        />
-                      ) : (
-                        <h3 className="truncate text-md md:text-lg">
-                          {module.title}
-                        </h3>
-                      )}
-                    </div>
+          <Card key={module?.moduleId} className="bg-muted shadow-sm">
+            {/* 1. Add padding directly to CardContent. p-4 is a good default. */}
+            <CardContent className="p-4">
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                <div className="flex flex-1 min-w-[200px] items-start gap-2">
+                  {" "}
+                  <span className="shrink-0 font-semibold w-6 text-left">
+                    {index + 1}.
+                  </span>
+                  {/* 3. Title Container: This will take the rest of the space */}
+                  <div className="flex-1 min-w-0">
+                    {module.moduleId == editingModuleId ? (
+                      <Input
+                        value={editingModuleDraft?.title ?? module.title}
+                        onChange={(e) =>
+                          setEditingModuleDraft({
+                            ...(editingModuleDraft ?? module),
+                            title: e.target.value,
+                          })
+                        }
+                        className="text-md border-b bg-white p-1"
+                        placeholder="Module title"
+                      />
+                    ) : (
+                      <CardTitle className="text-md font-medium md:text-lg">
+                        {/* 4. Title: Now it's separate and will wrap correctly */}
+                        {module.title}
+                      </CardTitle>
+                    )}
                   </div>
-                  {stage == 2 && (
-                    <div className=" flex gap-4">
-                      {module.moduleId == editingModuleId ? (
-                        <div>
-                          {isUpdating ? (
-                            <Button>
-                              <Spinner className=" w-5 h-5" />
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() =>
-                                handleEditSubmitModuleClick(editingModuleDraft)
-                              }
-                            >
-                              <Check className=" w-5 h-5" />
-                            </Button>
-                          )}
-                        </div>
-                      ) : (
-                        <Button onClick={() => handleEditModuleClick(module)}>
-                          <Edit className=" w-5 h-5" />
-                        </Button>
-                      )}
-                      {module.moduleId == editingModuleId ? (
-                        <div>
-                          <Button onClick={() => handleCancelEditModule()}>
-                            <X className=" w-5 h-5" />
-                          </Button>
-                        </div>
-                      ) : (
+                </div>
+
+                {/* 5. RIGHT SIDE: Button Group */}
+                {/* - flex-shrink-0: Prevents this group from shrinking. */}
+                {stage == 2 && (
+                  <div className="flex shrink-0 gap-2">
+                    {module.moduleId == editingModuleId ? (
+                      <>
                         <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            handleEditSubmitModuleClick(editingModuleDraft)
+                          }
+                        >
+                          {isUpdating ? (
+                            <Spinner className="h-4 w-4" />
+                          ) : (
+                            <Check className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleCancelEditModule()}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleEditModuleClick(module)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
                           onClick={() =>
                             handleDeleteModuleClick(module.moduleId)
                           }
                         >
-                          <Trash className=" w-5 h-5" />
+                          <Trash className="h-4 w-4" />
                         </Button>
-                      )}
-                    </div>
-                  )}
-                </CardTitle>
-                {displayedDiscription != "" && (
-                  <p className="text-md text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {displayedDiscription}
-                  </p>
+                      </>
+                    )}
+                  </div>
                 )}
-                {isLongDescription && (
-                  <CardFooter className="px-0 pb-0 flex justify-end">
-                    <Button
-                      variant="ghost"
-                      onClick={() => toggleModuleExpansion(module.moduleId)}
-                      className="text-primary hover:bg-primary-foreground flex items-center gap-1"
-                    >
-                      {isExpanded ? "Show Less" : "Show More"}
-                      {isExpanded ? (
-                        <ChevronUpIcon className="w-4 h-4" />
-                      ) : (
-                        <ChevronDownIcon className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </CardFooter>
-                )}
-              </CardContent>
-            }
+              </div>
+
+              {/* 6. DESCRIPTION: This is now *outside* the flex row. */}
+              {/* It will always render cleanly underneath. */}
+              {displayedDiscription != "" && (
+                <p className="pt-3 text-sm text-muted-foreground leading-relaxed whitespace-pre-line md:text-md">
+                  {displayedDiscription}
+                </p>
+              )}
+
+              {/* "Show More" Footer */}
+              {isLongDescription && (
+                <CardFooter className="px-0 pt-2 pb-0 flex justify-end">
+                  <Button
+                    variant="ghost"
+                    onClick={() => toggleModuleExpansion(module.moduleId)}
+                    className="text-primary hover:bg-primary-foreground flex items-center gap-1"
+                  >
+                    {isExpanded ? "Show Less" : "Show More"}
+                    {isExpanded ? (
+                      <ChevronUpIcon className="h-4 w-4" />
+                    ) : (
+                      <ChevronDownIcon className="h-4 w-4" />
+                    )}
+                  </Button>
+                </CardFooter>
+              )}
+            </CardContent>
           </Card>
         );
       })}

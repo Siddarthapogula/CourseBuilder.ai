@@ -46,39 +46,43 @@ export default function SideSheetForMobileView() {
             </Link>
           </div>
           <div className="grid gap-3">
-            {status == "unauthenticated" ? (
-              <div className="grid gap-3">
-                <Link href="/sign-in">
-                  <Button className="w-full">Sign In</Button>
-                </Link>
-                <Link href="/sign-up">
-                  <Button variant="outline" className="w-full">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="grid gap-3">
-                <Link
-                  href={`/profile`}
-                  className=" flex gap-2 justify-center items-center"
-                >
-                  {data?.user?.image ? (
-                    <Image
-                      width={35}
-                      height={35}
-                      className=" rounded-full"
-                      alt=""
-                      src={data?.user?.image}
-                    />
-                  ) : (
-                    <User className=" w-6 h-6" />
-                  )}
-                  <span className=" text-sm">{data?.user?.name}</span>
-                </Link>
-                <Button onClick={() => signOut({ callbackUrl: "/" })}>
-                  Logout
-                </Button>
+            {status !== "loading" && (
+              <div>
+                {status == "unauthenticated" ? (
+                  <div className="grid gap-3">
+                    <Link href="/sign-in">
+                      <Button className="w-full">Sign In</Button>
+                    </Link>
+                    <Link href="/sign-up">
+                      <Button variant="outline" className="w-full">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    <Link
+                      href={`/profile`}
+                      className=" flex gap-2 justify-center items-center"
+                    >
+                      {data?.user?.image ? (
+                        <Image
+                          width={35}
+                          height={35}
+                          className=" rounded-full"
+                          alt=""
+                          src={data?.user?.image}
+                        />
+                      ) : (
+                        <User className=" w-6 h-6" />
+                      )}
+                      <span className=" text-sm">{data?.user?.name}</span>
+                    </Link>
+                    <Button onClick={() => signOut({ callbackUrl: "/" })}>
+                      Logout
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
             <div className=" flex justify-center items-center">

@@ -31,7 +31,7 @@ export async function BuildCourse({
     if (!prompt || !generationStage)
       throw new ValidationError("provide prompt and generationStage correctly");
     const response = await genAi.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents: prompt as string,
     });
     if (!response.text)
@@ -42,6 +42,7 @@ export async function BuildCourse({
     );
     const result = JSON.parse(cleaned);
     if (stage == 1) {
+      // for testing the ui, don't need to generate from ai.
       // return GetResponseObject("success", stage1OutputData);
       return await createCourse(result);
     } else if (stage == 2) {
@@ -64,7 +65,7 @@ export async function BuildCourse({
       );
     }
   } catch (e: any) {
-    // some how need to fix it in more correct way 
+    // some how need to fix it in more correct way
     if (
       e.message &&
       (e.message.includes("503") ||

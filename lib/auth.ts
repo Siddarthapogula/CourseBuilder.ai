@@ -37,8 +37,14 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           throw new NotFoundError("Invalid Email Or User Does Not Exists");
         }
+
         if (!user.password) {
-          return null;
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+          };
         }
         if (
           !(await comparePasswordAgainstHash(
