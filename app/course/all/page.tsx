@@ -11,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Search, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const searchPlaceHolder = () => {
   return (
@@ -40,10 +41,12 @@ export default function AllCourses() {
       queryClient.invalidateQueries({
         queryKey: ["MyCourses"],
       });
+      toast.success("Course forked Successfully.");
     },
     onError: (e: any) => {
       console.log("forking unsuccessful", e.message);
       alert("Failed to fork" + e.message);
+      toast.error("Failed to fork course, cause : " + e.message);
     },
   });
 

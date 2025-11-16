@@ -30,7 +30,7 @@ export default function CourseCard({
           className="text-sm flex gap-2 items-center font-medium text-primary py-2"
           onClick={() => router.push(`/user/${course.userId}`)}
         >
-          Author :{" "}
+          Author{" : "}
           {course.user.image ? (
             <Image
               alt=""

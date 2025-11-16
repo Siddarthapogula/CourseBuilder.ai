@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { signOut, useSession } from "next-auth/react";
 import { ModeToggle } from "./ModeToggle";
+import { toast } from "sonner";
 
 export default function UserButtons() {
   const { data } = useSession();
@@ -25,7 +26,14 @@ export default function UserButtons() {
               <User className=" w-6 h-6" />
             )}
           </Link>
-          <Button onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
+          <Button
+            onClick={() => {
+              signOut({ callbackUrl: "/" });
+              toast.success("User Loggedout");
+            }}
+          >
+            Logout
+          </Button>
         </div>
       ) : (
         <div className=" flex gap-3">

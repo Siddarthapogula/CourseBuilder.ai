@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 async function getCourseDetailsWithId(courseId: string) {
   if (!courseId) return;
@@ -42,11 +43,12 @@ export default function CourseWithId({ params }: any) {
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["Course", courseId] });
       queryClient.invalidateQueries({ queryKey: ["MyCourses"] });
+      toast.success("Course deleted successfully");
       router.push("/course/me");
     },
     onError: (e: any) => {
       console.log("deletion unsuccessful", e.message);
-      alert("Failed to Delete " + e.message);
+      toast.error("Failed to Delete Course, cause: " + e.message);
     },
   });
 
@@ -64,11 +66,12 @@ export default function CourseWithId({ params }: any) {
         };
       });
       queryClient.invalidateQueries({ queryKey: ["Course", courseId] });
+      toast.success("Course forked Successfully.");
       queryClient.invalidateQueries({ queryKey: ["MyCourses"] });
     },
     onError: (e: any) => {
       console.log("forking unsuccessful", e.message);
-      alert("Failed to fork" + e.message);
+      toast.error("Failed to fork course, cause : " + e.message);
     },
   });
   if (isError && !isLoading) {
@@ -108,8 +111,8 @@ export default function CourseWithId({ params }: any) {
             </h1>
             <div className=" flex justify-between items-center">
               <div className=" flex gap-2 items-center">
-                <div className="flex">
-                  <span className="  text-sm md:text-md">Author : </span>
+                <div className="flex space-x-2">
+                  <span className="  text-sm md:text-md">Author {" : "} </span>
                   <Link href={`/user/${courseData.user.id}`}>
                     <div className=" flex gap-1 items-center">
                       {courseData?.user?.image ? (

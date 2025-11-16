@@ -12,6 +12,7 @@ import { User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 
 export default function UserCourses() {
   const userId = usePathname().split("/")[2];
@@ -35,10 +36,11 @@ export default function UserCourses() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["UserCourses", userId] });
       queryClient.invalidateQueries({ queryKey: ["MyCourses"] });
+      toast.success("Course forked Successfully.");
     },
     onError: (e: any) => {
       console.log("forking unsuccessful", e.message);
-      alert("Failed to fork" + e.message);
+      toast.error("Failed to fork course, cause : " + e.message);
     },
   });
 

@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import z from "zod";
 
 const userRegistrationSchema = z.object({
@@ -48,9 +49,11 @@ export default function () {
     }
     try {
       await registerUser({ email, password });
+      toast.success("Account Registered Successfully.");
       router.push("/api/auth/signin");
     } catch (e: any) {
       console.log(e);
+      toast.error("Registration unsuccessfull");
       setFormError(e.message);
     } finally {
       setStatus("Idle");

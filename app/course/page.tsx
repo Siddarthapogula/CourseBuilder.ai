@@ -18,6 +18,7 @@ import {
 import { ArrowUp, Square } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export default function CourseBuilder() {
   const [userPrompt, setUserPrompt] = useState("");
@@ -89,10 +90,10 @@ export default function CourseBuilder() {
       if (!courseData?.courseId) return;
       await completeCourse(courseData?.courseId);
       setStage(4);
+      toast.success("Course created succcessfully.");
       router.push(`/course/${courseData?.courseId}`);
-      alert(courseData.courseName + " successfully created");
-    } catch (e) {
-      alert("error while finalizing course, trying again please" + e);
+    } catch (e: any) {
+      toast.error("Failed to finalize course, trying again please" + e.message);
     }
   }
 
