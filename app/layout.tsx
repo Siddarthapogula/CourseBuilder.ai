@@ -4,6 +4,7 @@ import { Providers } from "@/components/providers";
 import Header from "@/components/Header";
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Course Builder AI",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Header />
           {children}
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

@@ -30,7 +30,7 @@ export default function ModuleDisplay({ modulesData }: ModuleDisplayProps) {
         const isLongDescription =
           module?.description &&
           module.description.length > descriptionCharLimit;
-        const displayedDiscription =
+        const displayedDescription =
           isExpanded || !isLongDescription
             ? module?.description
             : `${module.description?.substring(0, descriptionCharLimit)}...`;
@@ -39,21 +39,17 @@ export default function ModuleDisplay({ modulesData }: ModuleDisplayProps) {
             {
               <CardContent>
                 <CardTitle className=" text-md md:text-lg my-2 font-medium">
-                  <div className=" flex gap-2 items-center">
+                  <div className="flex gap-2 min-w-0">
                     <span>
                       {modulesData.indexOf(module) + 1}
                       {". "}
                     </span>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="truncate text-md md:text-lg">
-                        {module.title}
-                      </h3>
-                    </div>
+                    <h3 className="text-md md:text-lg">{module.title}</h3>
                   </div>
                 </CardTitle>
-                {displayedDiscription != "" && (
-                  <p className="text-md text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {displayedDiscription}
+                {displayedDescription != "" && (
+                  <p className="text-sm md:text-md text-muted-foreground leading-relaxed whitespace-pre-line text-justify">
+                    {displayedDescription}
                   </p>
                 )}
                 {isLongDescription && (

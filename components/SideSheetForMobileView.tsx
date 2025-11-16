@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 export default function SideSheetForMobileView() {
   const { status, data } = useSession();
@@ -78,7 +79,12 @@ export default function SideSheetForMobileView() {
                       )}
                       <span className=" text-sm">{data?.user?.name}</span>
                     </Link>
-                    <Button onClick={() => signOut({ callbackUrl: "/" })}>
+                    <Button
+                      onClick={() => {
+                        signOut({ callbackUrl: "/" });
+                        toast.success("User Loggedout");
+                      }}
+                    >
                       Logout
                     </Button>
                   </div>

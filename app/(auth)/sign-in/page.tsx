@@ -9,6 +9,7 @@ import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import z from "zod";
 
 const userCredentialsSchema = z.object({
@@ -53,8 +54,10 @@ export default function () {
       });
       if (result?.error) {
         setFormError(result.error);
+        toast.error("Login unsuccessfull.");
       } else {
         router.push("/");
+        toast.success("Login successfull.");
       }
     } catch (e: any) {
       setFormError(e.message);
@@ -68,8 +71,10 @@ export default function () {
     setFormError("");
     try {
       await signIn("google", { callbackUrl: "/" });
+      toast.success("Login successfull.");
     } catch (e) {
       setFormError("Failed to initiate Google sign-in");
+      toast.error("Login unsuccessfull.");
     }
   };
   useEffect(() => {

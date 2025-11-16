@@ -28,7 +28,7 @@ export default function MyCourses() {
   const { forkedCourses, createdCourses }: any = myCoursesData;
   return (
     <div className=" min-h-screen py-24">
-      <main className=" mx-auto w-full max-w-4xl px-5 space-y-2">
+      <main className=" mx-auto w-full max-w-2xl px-3 md:max-w-4xl md:px-5 space-y-2">
         <h1 className=" text-2xl font-mediumfy">My Courses</h1>
         <section className=" space-y-2">
           {createdCourses.length ? (

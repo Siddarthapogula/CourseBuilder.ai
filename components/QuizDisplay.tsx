@@ -29,11 +29,13 @@ export default function QuizDisplay({
   return (
     <div className=" space-y-2 ">
       <div className="">
-        <h1 className=" text-2xl font-medium">Quiz for {courseName}</h1>
+        <h1 className=" text-xl  md:text-2xl font-medium">
+          Quiz for {courseName}
+        </h1>
         <div className=" space-y-3 my-2 ">
           {quizData?.questions.map((question: any, index: number) => (
-            <div key={index} className="space-y-2">
-              <p className=" text-md font-medium">
+            <div key={index} className="space-y-2 px-1 md:px-2">
+              <p className=" text-md font-medium ">
                 {index + 1}
                 {". "} {question?.question}
               </p>
