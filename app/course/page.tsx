@@ -145,11 +145,17 @@ export default function CourseBuilder() {
   }
   return (
     <div className=" min-h-screen py-24">
-      <main className=" mx-auto max-w-4xl px-5 flex flex-col gap-2">
-        <Badge variant={"outline"} className="p-2 text-xs">
+      <main className=" mx-auto max-2-2xl px-2 md:max-w-4xl md:px-5 flex flex-col gap-2">
+        <Badge
+          variant={"outline"}
+          className="p-2 text-xs whitespace-normal  wrap-break-word max-w-full"
+        >
           Click on "How it Works", If you stuck
         </Badge>
-        <Badge variant={"outline"} className="p-2 text-xs">
+        <Badge
+          variant={"outline"}
+          className="p-2 text-xs whitespace-normal  wrap-break-word max-w-full"
+        >
           Facing some issue with AI api, If you get error like overload just
           retry. Trying hard to resolve this soon..
         </Badge>

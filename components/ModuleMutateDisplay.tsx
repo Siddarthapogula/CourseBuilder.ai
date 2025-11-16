@@ -54,13 +54,13 @@ export default function ModuleMutateDisplay({
     });
   };
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 ">
       {modulesData.map((module: ModuleData, index: number) => {
         const isExpanded = expandedModules.has(module.moduleId);
         const isLongDescription =
           module?.description &&
           module.description.length > descriptionCharLimit;
-        const displayedDiscription =
+        const displayedDescription =
           isExpanded || !isLongDescription
             ? module?.description
             : `${module.description?.substring(0, descriptionCharLimit)}...`;
@@ -151,9 +151,9 @@ export default function ModuleMutateDisplay({
 
               {/* 6. DESCRIPTION: This is now *outside* the flex row. */}
               {/* It will always render cleanly underneath. */}
-              {displayedDiscription != "" && (
-                <p className="pt-3 text-sm text-muted-foreground leading-relaxed whitespace-pre-line md:text-md">
-                  {displayedDiscription}
+              {displayedDescription != "" && (
+                <p className="text-sm md:text-md text-muted-foreground leading-relaxed whitespace-pre-line text-justify">
+                  {displayedDescription}
                 </p>
               )}
 

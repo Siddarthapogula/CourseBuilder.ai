@@ -69,7 +69,7 @@ export default function UserCourses() {
       : null;
   return (
     <div className=" min-h-screen py-24">
-      <main className="mx-auto w-full max-w-4xl px-5 space-y-2">
+      <main className="mx-auto w-full max-w-2xl px-3 md:max-w-4xl md:px-5 space-y-2">
         {!userName && <h1>No Courses Found from the user.</h1>}
         <section className=" space-y-4">
           {userName && (

@@ -55,7 +55,7 @@ export default function AllCourses() {
   const courseData = data?.data;
   return (
     <div className="min-h-screen py-24">
-      <main className=" mx-auto w-full max-w-2xl md:max-w-4xl px-5 space-y-2">
+      <main className=" mx-auto w-full max-w-2xl px-3 md:max-w-4xl md:px-5 space-y-2">
         {isLoading ? (
           <LoadingDisplay message="fetching all courses" />
         ) : isError ? (

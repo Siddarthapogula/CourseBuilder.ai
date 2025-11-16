@@ -100,9 +100,9 @@ export default function CourseWithId({ params }: any) {
   };
   return (
     <div className=" min-h-screen pt-24 mb-12">
-      <main className=" mx-auto max-w-2xl w-full px-3 md:max-w-4xl md:px-5">
+      <main className=" mx-auto max-w-2xl w-full px-1  md:max-w-4xl md:px-5">
         {courseData?.modules && (
-          <div className=" px-2 m-2 space-y-2">
+          <div className=" px-2  space-y-2">
             <h1 className=" text-xl md:text-2xl font-medium">
               {courseData?.courseName}:{" "}
             </h1>

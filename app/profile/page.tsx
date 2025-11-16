@@ -92,11 +92,16 @@ export default function Profile() {
   }, []);
   const userImage = userData?.image || "/default-avatar.png";
   if (!userData) {
-    return <LoadingDisplay message="fetching profile" />;
+    return (
+      <div className=" py-24">
+        {" "}
+        <LoadingDisplay message="fetching profile" />
+      </div>
+    );
   }
   return (
-    <div className=" min-h-screen py-24">
-      <Card className=" mx-auto w-full max-w-3xl space-y-2 p-4">
+    <div className=" min-h-screen py-24 max-w-2xl px-2 md:max-w-4xl">
+      <Card className=" mx-auto w-full max-w-2xl md:max-w-4xl space-y-2 p-4">
         <CardHeader>
           <CardTitle className=" text-2xl font-medium">Profile</CardTitle>
         </CardHeader>
