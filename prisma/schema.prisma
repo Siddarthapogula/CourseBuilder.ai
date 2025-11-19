@@ -14,6 +14,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum planType {
+  TRIAL
+  BUDDY
+  PROFESSIONAL
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -25,12 +31,26 @@ model User {
   organization String?
   about        String?
 
+  credits Int      @default(3)
+  plan    planType @default(TRIAL)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  courses  Course[]
+  accounts          Account[]
+  sessions          Session[]
+  courses           Course[]
+  processedPayments ProcessedPayment[]
+}
+
+model ProcessedPayment {
+  id String @id @default(cuid())
+
+  razorpayPaymentId String   @unique
+  userId            String
+  plan              planType
+  user              User     @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now())
 }
 
 model Account {

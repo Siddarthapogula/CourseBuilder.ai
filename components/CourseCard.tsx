@@ -22,7 +22,7 @@ export default function CourseCard({
   handleForkClick: (courseId: string) => void;
 }) {
   const router = useRouter();
-  const { data }: any = useSession();
+  const { data, status }: any = useSession();
   return (
     <Card key={course?.courseId} className=" cursor-pointer">
       <CardHeader>

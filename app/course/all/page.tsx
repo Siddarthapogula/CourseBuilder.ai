@@ -9,6 +9,7 @@ import { useDebounce } from "@/lib/hooks/useDebounce";
 import { CourseData } from "@/lib/utils/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Search, SearchIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -25,8 +26,12 @@ export default function AllCourses() {
   const [searchTerm, setSerchTerm] = useState("");
   const [curPage, setCurPage] = useState(0);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
-  const { data, isLoading, isError }: any = useQuery({
+  const { data, status }: any = useSession();
+  const {
+    data: courseData,
+    isLoading: courseDataLoading,
+    isError: courseDataError,
+  }: any = useQuery({
     queryKey: ["courseDataInAll", debouncedSearchTerm, curPage],
     queryFn: () => getAllCourses(debouncedSearchTerm, curPage),
     placeholderData: (previousData) => previousData,
@@ -45,23 +50,25 @@ export default function AllCourses() {
     },
     onError: (e: any) => {
       console.log("forking unsuccessful", e.message);
-      alert("Failed to fork" + e.message);
       toast.error("Failed to fork course, cause : " + e.message);
     },
   });
 
   const handleForkClick = async (courseId: string) => {
+    if (status == "unauthenticated") {
+      toast.warning("user should login to fork course");
+      return;
+    }
     const wantToFork = confirm(`Are you sure want to fork course`);
     if (!wantToFork) return;
     forkMutation(courseId);
   };
-  const courseData = data?.data;
   return (
     <div className="min-h-screen py-24">
       <main className=" mx-auto w-full max-w-2xl px-3 md:max-w-4xl md:px-5 space-y-2">
-        {isLoading ? (
+        {courseDataLoading ? (
           <LoadingDisplay message="fetching all courses" />
-        ) : isError ? (
+        ) : courseDataError ? (
           <h1 className="p-24 text-center text-red-500 ">Error</h1>
         ) : (
           <>
@@ -78,8 +85,8 @@ export default function AllCourses() {
               />
             </div>
             <section className=" space-y-2">
-              {courseData?.length > 0 ? (
-                courseData.map((course: CourseData) => {
+              {courseData?.data?.length > 0 ? (
+                courseData?.data.map((course: CourseData) => {
                   return (
                     <div key={course.courseId}>
                       <CourseCard
@@ -106,7 +113,7 @@ export default function AllCourses() {
             </section>{" "}
           </>
         )}
-        {!isLoading && (
+        {!courseDataLoading && (
           <section className=" flex gap-2 items-center">
             <Button
               onClick={() => setCurPage((prev) => prev - 1)}
@@ -115,7 +122,7 @@ export default function AllCourses() {
             >
               Prev
             </Button>
-            {courseData?.length >= 10 && (
+            {courseData?.data?.length >= 10 && (
               <Button onClick={() => setCurPage((prev) => prev + 1)}>
                 Next
               </Button>

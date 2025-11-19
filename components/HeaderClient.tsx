@@ -49,6 +49,9 @@ export default function HeaderClient() {
           My Courses
         </Link>
       )}
+      <Link href="/pricing" className="nav-item-underline-animation">
+        Pricing
+      </Link>
     </ul>
   );
 }
