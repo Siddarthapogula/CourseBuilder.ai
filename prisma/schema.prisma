@@ -96,6 +96,7 @@ model Course {
   quiz         Quiz?
   references   String[]
   status       statusType
+  stage        Int        @default(2)
   forkedFromId String?
   forkedFrom   Course?    @relation("Forking", fields: [forkedFromId], references: [courseId], onDelete: SetNull, onUpdate: Cascade)
   forks        Course[]   @relation("Forking")

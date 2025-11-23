@@ -8,6 +8,8 @@ import {
 } from "@/lib/utils/error-handling-class";
 import { GetResponseObject, getUserIdOrThrowError } from "@/lib/utils/helper";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 export async function createCourse(courseData: any) {
   try {
@@ -60,10 +62,12 @@ export async function getCourseWithId(courseId: string) {
       where: {
         courseId: courseId,
       },
-      include: {
+      select: {
+        courseName: true,
+        stage: true,
         modules: true,
         quiz: {
-          include: {
+          select: {
             questions: true,
           },
         },
@@ -272,4 +276,57 @@ export async function deleteCourseWithId(courseId: string) {
   } catch (e: any) {
     throw HandleApiError(e);
   }
+}
+
+export async function getUsersDraftCourses() {
+  try {
+    const userId = await getUserIdOrThrowError();
+    const draftCourses = await prisma.course.findMany({
+      where: {
+        userId: userId,
+        status: "DRAFT",
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+      select: {
+        courseId: true,
+        courseName: true,
+        updatedAt: true,
+      },
+    });
+    return GetResponseObject("success", draftCourses);
+  } catch (e: any) {
+    throw HandleApiError(e);
+  }
+}
+
+export async function updateCourses() {
+  const allCourses = await prisma.course.findMany({
+    select: {
+      courseId: true,
+      status: true,
+    },
+  });
+  const newCourses = allCourses.map((course) => {
+    if (course.status == "COMPLETED") {
+      return {
+        courseId: course.courseId,
+        stage: 4,
+      };
+    }
+  });
+  newCourses.forEach((course) => {
+    async function updateCourse(updatedcourse: any) {
+      await prisma.course.update({
+        where: {
+          courseId: updatedcourse?.courseId,
+        },
+        data: {
+          stage: updatedcourse?.stage,
+        },
+      });
+    }
+    updateCourse(course);
+  });
 }

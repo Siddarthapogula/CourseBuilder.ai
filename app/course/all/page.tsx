@@ -69,7 +69,7 @@ export default function AllCourses() {
         {courseDataLoading ? (
           <LoadingDisplay message="fetching all courses" />
         ) : courseDataError ? (
-          <h1 className="p-24 text-center text-red-500 ">Error</h1>
+          <h1 className="p-24 text-censter text-red-500 ">Error</h1>
         ) : (
           <>
             <h1 className=" text-2xl font-mediumf">All Courses and Modules</h1>
