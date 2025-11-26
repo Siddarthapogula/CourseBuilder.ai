@@ -88,6 +88,10 @@ export default function CourseWithId({ params }: any) {
   let courseData = data;
 
   const handleForkClick = async (courseId: string) => {
+    if (userData?.status == "unauthenticated") {
+      toast.warning("user should login to fork course");
+      return;
+    }
     const wantToFork = confirm(
       `Are you sure want to fork course : ${courseData.courseName}`
     );

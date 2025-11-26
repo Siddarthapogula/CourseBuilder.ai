@@ -41,16 +41,16 @@ export interface CourseData {
   modules: ModuleData[];
   quiz?: QuizData;
   status?: CourseStatusEnum;
-  forkedFromId: string;
+  forkedFromId?: string;
   forks?: CourseData[];
-  _count: {
+  _count?: {
     forks: number;
   };
   stars?: number;
   references?: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  user: UserData;
+  createdAt?: Date;
+  updatedAt?: Date;
+  user?: UserData;
 }
 
 export interface QuizData {

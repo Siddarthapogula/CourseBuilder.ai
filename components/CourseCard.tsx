@@ -22,7 +22,7 @@ export default function CourseCard({
   handleForkClick: (courseId: string) => void;
 }) {
   const router = useRouter();
-  const { data }: any = useSession();
+  const { data, status }: any = useSession();
   return (
     <Card key={course?.courseId} className=" cursor-pointer">
       <CardHeader>
@@ -31,7 +31,7 @@ export default function CourseCard({
           onClick={() => router.push(`/user/${course.userId}`)}
         >
           Author{" : "}
-          {course.user.image ? (
+          {course?.user?.image ? (
             <Image
               alt=""
               width={20}
@@ -71,7 +71,7 @@ export default function CourseCard({
           <div className="flex items-center space-x-2">
             <GitFork className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">
-              Fork {course._count.forks}
+              Fork {course?._count?.forks}
             </span>
           </div>
         </Button>

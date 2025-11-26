@@ -1,7 +1,11 @@
 "use client";
-import { completeCourse } from "@/actions/course";
+import {
+  completeCourse,
+  getCourseWithId,
+} from "@/actions/course";
 import { BuildCourse } from "@/actions/courseBuilder";
 import { deleteModuleById, updateModuleById } from "@/actions/module";
+import DraftSideBar from "@/components/DraftSideBar";
 import LoadingDisplay from "@/components/LoadingDisplay";
 import ModuleMutateDisplay from "@/components/ModuleMutateDisplay";
 import QuizDisplay from "@/components/QuizDisplay";
@@ -15,28 +19,30 @@ import {
   QuizData,
   ResponseObject,
 } from "@/lib/utils/types";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowUp, Square } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export default function CourseBuilder() {
+  const queryClient = useQueryClient();
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [courseData, setCourseData] = useState<CourseData>();
   const [modulesData, setModulesData] = useState<ModuleData[] | null>(null);
   const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [stage, setStage] = useState(1);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
 
   const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
   const [editingModuleDraft, setEditingModuleDraft] =
     useState<ModuleData | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-
   const chatRef = useRef(null);
   const modulesRef = useRef<HTMLDivElement>(null);
   const quizRef = useRef(null);
-
   const router = useRouter();
 
   function getDataAccordingToStage() {
@@ -58,7 +64,6 @@ export default function CourseBuilder() {
       });
     }
   }, [stage]);
-
   async function handleSubmitInput() {
     setIsLoading(true);
     try {
@@ -72,6 +77,7 @@ export default function CourseBuilder() {
         setCourseData(response.data);
         setModulesData(response.data.modules);
         setStage((prev) => prev + 1);
+        queryClient.invalidateQueries({ queryKey: ["UserDraftCourses"] });
       } else if (stage == 2) {
         setModulesData(response.data);
         setStage((prev) => prev + 1);
@@ -84,7 +90,6 @@ export default function CourseBuilder() {
       setIsLoading(false);
     }
   }
-
   async function handleFinalizeCourse() {
     try {
       if (!courseData?.courseId) return;
@@ -96,7 +101,6 @@ export default function CourseBuilder() {
       toast.error("Failed to finalize course, trying again please" + e.message);
     }
   }
-
   async function handleEditModuleClick(module: ModuleData) {
     if (!module) return;
     setEditingModuleId(module.moduleId);
@@ -144,8 +148,35 @@ export default function CourseBuilder() {
       setModulesData(prev);
     }
   }
+
+  const handleSelectDraft = async (courseId: string) => {
+    if (courseData && modulesData && modulesData?.length > 0) {
+      const confirmed = confirm(
+        "Are you sure want to make this active course to draft and edit your previous course"
+      );
+      if (!confirmed) return;
+    }
+    setActiveCourseId(courseId);
+    const { data } = await getCourseWithId(courseId);
+    const draftCourseData = {
+      courseName: data?.courseName,
+      modules: data?.modules,
+      quiz: data?.quiz,
+      userId: data?.user?.id,
+      courseId: courseId,
+    };
+    setCourseData(draftCourseData);
+    setModulesData(data?.modules);
+    setStage(data?.stage);
+  };
   return (
     <div className=" min-h-screen py-24">
+      <DraftSideBar
+        isOpen={isSidebarOpen}
+        toggleSideBar={() => setIsSidebarOpen(!isSidebarOpen)}
+        onSelectDraft={handleSelectDraft}
+        currentCourseId={activeCourseId || undefined}
+      />
       <main className=" mx-auto max-2-2xl px-2 md:max-w-4xl md:px-5 flex flex-col gap-2">
         <Badge
           variant={"outline"}

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CourseData, UserData } from "@/lib/utils/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { User } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,6 +17,7 @@ import { toast } from "sonner";
 
 export default function UserCourses() {
   const userId = usePathname().split("/")[2];
+  const { data, status }: any = useSession();
   const {
     data: userDataresponse,
     isError: userDataError,
@@ -26,7 +28,11 @@ export default function UserCourses() {
     staleTime: 3 * 60 * 1000,
   });
   const userData = userDataresponse?.data;
-  const { data, isError, isLoading } = useQuery({
+  const {
+    data: userCourses,
+    isError: userCoursesError,
+    isLoading: userCoursesLoading,
+  } = useQuery({
     queryKey: ["UserCourses", userId],
     queryFn: () => getCoursesOfUser(userId),
   });
@@ -45,16 +51,20 @@ export default function UserCourses() {
   });
 
   const handleForkClick = (courseId: string) => {
+    if (status == "unauthenticated") {
+      toast.warning("user should login to fork course");
+      return;
+    }
     const confirmed = confirm("Are you sure you want to fork?");
     if (!confirmed) return;
     forkMutation(courseId);
     return;
   };
 
-  if (isError && !isLoading) {
+  if (userCoursesError && !userCoursesLoading) {
     return <h1 className=" py-24">Error</h1>;
   }
-  if (isLoading) {
+  if (userCoursesLoading) {
     return (
       <div className=" py-24 mx-auto container max-2-2xl md:max-w-4xl">
         {" "}
@@ -62,7 +72,7 @@ export default function UserCourses() {
       </div>
     );
   }
-  const { forkedCourses, createdCourses }: any = data?.data;
+  const { forkedCourses, createdCourses }: any = userCourses?.data;
   const userName =
     forkedCourses?.length > 0
       ? forkedCourses[0]?.user?.name

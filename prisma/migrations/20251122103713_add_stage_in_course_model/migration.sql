@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Course" ADD COLUMN     "stage" INTEGER NOT NULL DEFAULT 2;

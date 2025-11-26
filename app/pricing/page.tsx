@@ -1,142 +1,143 @@
-// "use client";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardFooter,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// // import {PlanType} from "@prisma/client"
-// import { Check } from "lucide-react";
-// import { useSession } from "next-auth/react";
-// import { useRouter } from "next/navigation";
-// import { useState } from "react";
-// import { toast } from "sonner";
-// const pricingPlans = [
-//   {
-//     id: ,
-//     name: "Trial",
-//     price: 0,
-//     credits: 3,
-//     description: "For testing.",
-//     features: ["3 Credits", "Public Access"],
-//     buttonText: "You've got them.",
-//     isPopular: false,
-//   },
-//   {
-//     id: planType.BUDDY,
-//     name: "Buddy",
-//     price: 99,
-//     credits: 10,
-//     description: "For students.",
-//     features: ["10 Credits", "Export PDF"],
-//     buttonText: "Get Buddy",
-//     isPopular: false,
-//   },
-//   {
-//     id: planType.PROFESSIONAL,
-//     name: "Professional",
-//     price: 249,
-//     credits: 30,
-//     description: "For serious professors and trainers.",
-//     features: ["30 Credits", "Export PDF", "Private Courses"],
-//     buttonText: "Get Professional",
-//     isPopular: true,
-//   },
-// ];
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Check } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
-// declare global {
-//   interface Window {
-//     Razorpay: any;
-//   }
-// }
+const pricingPlans = [
+  {
+    id: "TRIAL",
+    name: "Trial",
+    price: 0,
+    credits: 3,
+    description: "For testing.",
+    features: ["3 Credits", "Public Access"],
+    buttonText: "You've got them.",
+    isPopular: false,
+  },
+  {
+    id: "BUDDY",
+    name: "Buddy",
+    price: 99,
+    credits: 10,
+    description: "For students.",
+    features: ["10 Credits", "Export PDF"],
+    buttonText: "Get Buddy",
+    isPopular: false,
+  },
+  {
+    id: "PROFESSIONAL",
+    name: "Professional",
+    price: 249,
+    credits: 30,
+    description: "For serious professors and trainers.",
+    features: ["30 Credits", "Export PDF", "Private Courses"],
+    buttonText: "Get Professional",
+    isPopular: true,
+  },
+];
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function Pricing() {
-  // const { data: userData, status: userStatus } = useSession();
-  // const [isProcessing, setIsProcessing] = useState(false);
-  // const [currentPlanId, setCurrentPlanId] = useState<any>(null);
-  // const router = useRouter();
-  // const handleBuyClick = async (plan: planType) => {
-  //   if (userStatus == "unauthenticated") {
-  //     toast.warning("Please login to get Started");
-  //     return;
-  //   }
-  //   try {
-  //     setCurrentPlanId(plan);
-  //     setIsProcessing(true);
-  //     const orderResponse = await fetch("/api/payment/create-order", {
-  //       method: "POST",
-  //       body: JSON.stringify({ plan }),
-  //     });
-  //     const { orderId, amount, currency } = await orderResponse.json();
-  //     const options = {
-  //       key: process.env.NEXT_PUBLIC_RAZORPAY_TEST_ID,
-  //       amount: amount,
-  //       currency: currency,
-  //       name: "Course Builder AI",
-  //       description: `Purchase ${plan} plan.`,
-  //       order_id: orderId,
-  //       handler: async function (response: any) {
-  //         toast.dismiss();
-  //         toast.loading("verifing payment");
-  //         try {
-  //           const verifyResponse = await fetch("/api/payment/verify", {
-  //             method: "POST",
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify({
-  //               razorpay_payment_id: response.razorpay_payment_id,
-  //               razorpay_order_id: response.razorpay_order_id,
-  //               razorpay_signature: response.razorpay_signature,
-  //             }),
-  //           });
-  //           if (!verifyResponse.ok) {
-  //             alert("Payment verification failed, please contact support");
-  //           }
-  //           const result = await verifyResponse.json();
-  //           if (result.isVerified) {
-  //             toast.dismiss();
-  //             toast.success("Payment Successful! Your plan is updated.");
-  //             router.refresh();
-  //           } else {
-  //             alert(
-  //               "Payment Signature Verification failed, please contact support"
-  //             );
-  //           }
-  //         } catch (e: any) {
-  //           toast.dismiss();
-  //           toast.error("Payment failed, Please contact Support");
-  //         }
-  //       },
-  //       prefill: {
-  //         name: userData?.user?.name || "",
-  //         email: userData?.user?.email || "",
-  //       },
-  //       theme: {
-  //         color: "#4F46E5",
-  //       },
-  //     };
-  //     const rzp = new window.Razorpay(options);
-  //     rzp.open();
+  const { data: userData, status: userStatus } = useSession();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentPlanId, setCurrentPlanId] = useState<any>(null);
+  const router = useRouter();
+  const handleBuyClick = async (plan: string) => {
+    if (userStatus == "unauthenticated") {
+      toast.warning("Please login to get Started");
+      return;
+    }
+    toast.message("Currently working on this.");
+    return;
+    try {
+      setCurrentPlanId(plan);
+      setIsProcessing(true);
+      const orderResponse = await fetch("/api/payment/create-order", {
+        method: "POST",
+        body: JSON.stringify({ plan }),
+      });
+      const { orderId, amount, currency } = await orderResponse.json();
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_TEST_ID,
+        amount: amount,
+        currency: currency,
+        name: "Course Builder AI",
+        description: `Purchase ${plan} plan.`,
+        order_id: orderId,
+        handler: async function (response: any) {
+          toast.dismiss();
+          toast.loading("verifing payment");
+          try {
+            const verifyResponse = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+            if (!verifyResponse.ok) {
+              alert("Payment verification failed, please contact support");
+            }
+            const result = await verifyResponse.json();
+            if (result.isVerified) {
+              toast.dismiss();
+              toast.success("Payment Successful! Your plan is updated.");
+              router.refresh();
+            } else {
+              alert(
+                "Payment Signature Verification failed, please contact support"
+              );
+            }
+          } catch (e: any) {
+            toast.dismiss();
+            toast.error("Payment failed, Please contact Support");
+          }
+        },
+        prefill: {
+          name: userData?.user?.name || "",
+          email: userData?.user?.email || "",
+        },
+        theme: {
+          color: "#4F46E5",
+        },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
 
-  //     rzp.on("payment.failed", function (response: any) {
-  //       toast.dismiss();
-  //       toast.error("Payment Failed, Please try again");
-  //       console.log("Payment Failed", response.error);
-  //     });
-  //   } catch (e: any) {
-  //     toast.error("Failed to initiate" + e.message);
-  //   } finally {
-  //     setIsProcessing(false);
-  //     setCurrentPlanId(null);
-  //   }
-  // };
+      rzp.on("payment.failed", function (response: any) {
+        toast.dismiss();
+        toast.error("Payment Failed, Please try again");
+        console.log("Payment Failed", response.error);
+      });
+    } catch (e: any) {
+      toast.error("Failed to initiate" + e.message);
+    } finally {
+      setIsProcessing(false);
+      setCurrentPlanId(null);
+    }
+  };
   return (
     <div className="min-h-screen py-24">
-      {/*
       <main className=" mx-auto max-w-4xl px-5 space-y-2">
         <div className=" mb-12">
           <h2 className="text-3xl font-medium tracking-tight">Pricing</h2>
@@ -191,7 +192,6 @@ export default function Pricing() {
           ))}
         </div>
       </main>
-       */}
     </div>
   );
 }

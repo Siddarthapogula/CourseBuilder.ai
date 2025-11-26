@@ -8,6 +8,8 @@ import {
 } from "@/lib/utils/error-handling-class";
 import { GetResponseObject, getUserIdOrThrowError } from "@/lib/utils/helper";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 export async function createCourse(courseData: any) {
   try {
@@ -60,10 +62,12 @@ export async function getCourseWithId(courseId: string) {
       where: {
         courseId: courseId,
       },
-      include: {
+      select: {
+        courseName: true,
+        stage: true,
         modules: true,
         quiz: {
-          include: {
+          select: {
             questions: true,
           },
         },
@@ -109,7 +113,7 @@ export async function forkCourse(courseId: string) {
     if (!parentCourse) {
       throw new NotFoundError("Parent Course Not Found");
     }
-    if (parentCourse.userId == userId) {
+    if (parentCourse?.userId == userId) {
       throw new ValidationError("Forking own course is not allowed");
     }
     const forkCount = await prisma.course.count({
@@ -129,7 +133,7 @@ export async function forkCourse(courseId: string) {
         status: "DRAFT",
         forkedFromId: parentCourse.courseId,
         modules: {
-          create: parentCourse.modules.map((module) => ({
+          create: parentCourse.modules.map((module: any) => ({
             title: module.title,
             description: module.description,
             referenceSite: module.referenceSite,
@@ -141,7 +145,7 @@ export async function forkCourse(courseId: string) {
               create: {
                 tags: parentCourse.quiz.tags,
                 questions: {
-                  create: parentCourse.quiz.questions.map((q) => ({
+                  create: parentCourse.quiz.questions.map((q: any) => ({
                     question: q.question,
                     options: q.options,
                     answer: q.answer,
@@ -269,6 +273,30 @@ export async function deleteCourseWithId(courseId: string) {
       },
     });
     return GetResponseObject("success", deletedCourse);
+  } catch (e: any) {
+    throw HandleApiError(e);
+  }
+}
+
+export async function getUsersDraftCourses() {
+  try {
+    const userId = await getUserIdOrThrowError();
+    const draftCourses = await prisma.course.findMany({
+      where: {
+        userId: userId,
+        status: "DRAFT",
+        forkedFromId: null,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+      select: {
+        courseId: true,
+        courseName: true,
+        updatedAt: true,
+      },
+    });
+    return GetResponseObject("success", draftCourses);
   } catch (e: any) {
     throw HandleApiError(e);
   }
