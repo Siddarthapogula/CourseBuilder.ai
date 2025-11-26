@@ -1,3 +1,4 @@
+// this is just for testing ui, to save ai calls, i took the response from ai and stored here, using it when needed.
 export const stage1OutputData = {
   message: "success",
   courseId: "cmh3oah5t000vu9uk4gf1jolt",
