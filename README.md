@@ -4,11 +4,13 @@ Live at : https://course-builder-ai.vercel.app/
 
 Currently Adding some more features.
 
--> pricing.
--> ui for showing examples, code snippets.
--> export to ppt.
--> reporting.
--> more soon..
+- ui for showing
+-  examples,
+- code snippets.
+-   export to ppt.
+-  reporting.
+- pricing.
+-   more soon..
 
 -> Feel free to raise issue.
 
