@@ -6,11 +6,12 @@ import {
 } from "@/actions/course";
 import LoadingDisplay from "@/components/LoadingDisplay";
 import ModuleDisplay from "@/components/ModuleDisplay";
+import PdfDownLoadButton from "@/components/PdfDownloadButton";
 import QuizDisplay from "@/components/QuizDisplay";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GitFork, User } from "lucide-react";
+import { GitFork, Trash2, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -88,10 +89,6 @@ export default function CourseWithId({ params }: any) {
   let courseData = data;
 
   const handleForkClick = async (courseId: string) => {
-    if (userData?.status == "unauthenticated") {
-      toast.warning("user should login to fork course");
-      return;
-    }
     const wantToFork = confirm(
       `Are you sure want to fork course : ${courseData.courseName}`
     );
@@ -140,7 +137,7 @@ export default function CourseWithId({ params }: any) {
                   onClick={() => handleForkClick(courseData.courseId)}
                   className=""
                   variant={"outline"}
-                  disabled={userData?.data?.user?.id == courseData.userId}
+                  disabled={userData?.data?.user?.id == courseData?.user?.id}
                 >
                   <div className="flex items-center space-x-2">
                     <GitFork className="h-4 w-4 text-muted-foreground" />
@@ -154,15 +151,23 @@ export default function CourseWithId({ params }: any) {
                     </div>
                   </div>
                 </Button>
-                {userData?.data?.user?.id == courseData.userId && (
+                {userData?.data?.user?.id == courseData?.user?.id && (
                   <Button
                     onClick={() =>
                       handleDeleteCourseClick(courseData?.courseId)
                     }
                   >
-                    {isDeleting ? <Spinner className=" w-4 h-4" /> : "Delete"}
+                    {isDeleting ? (
+                      <Spinner className=" w-4 h-4" />
+                    ) : (
+                      <span className=" flex items-center">
+                        <Trash2 className=" w-4 h-4  md:hidden" />
+                        <span className=" hidden md:block">Delete</span>
+                      </span>
+                    )}
                   </Button>
                 )}
+                {<PdfDownLoadButton course={courseData} />}
               </div>
             </div>
             <ModuleDisplay modulesData={courseData.modules} />
