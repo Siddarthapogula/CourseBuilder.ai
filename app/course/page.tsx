@@ -2,7 +2,6 @@
 import {
   completeCourse,
   getCourseWithId,
-  updateCourses,
 } from "@/actions/course";
 import { BuildCourse } from "@/actions/courseBuilder";
 import { deleteModuleById, updateModuleById } from "@/actions/module";

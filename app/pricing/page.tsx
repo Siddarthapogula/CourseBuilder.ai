@@ -8,16 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { planType } from "@prisma/client";
-import { error } from "console";
 import { Check } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+
 const pricingPlans = [
   {
-    id: planType.TRIAL,
+    id: "TRIAL",
     name: "Trial",
     price: 0,
     credits: 3,
@@ -27,7 +26,7 @@ const pricingPlans = [
     isPopular: false,
   },
   {
-    id: planType.BUDDY,
+    id: "BUDDY",
     name: "Buddy",
     price: 99,
     credits: 10,
@@ -37,7 +36,7 @@ const pricingPlans = [
     isPopular: false,
   },
   {
-    id: planType.PROFESSIONAL,
+    id: "PROFESSIONAL",
     name: "Professional",
     price: 249,
     credits: 30,
@@ -59,11 +58,13 @@ export default function Pricing() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentPlanId, setCurrentPlanId] = useState<any>(null);
   const router = useRouter();
-  const handleBuyClick = async (plan: planType) => {
+  const handleBuyClick = async (plan: string) => {
     if (userStatus == "unauthenticated") {
       toast.warning("Please login to get Started");
       return;
     }
+    toast.message("Currently working on this.");
+    return;
     try {
       setCurrentPlanId(plan);
       setIsProcessing(true);

@@ -45,6 +45,12 @@ export default function SideSheetForMobileView() {
             <Link href="/#how" className={buttonVariants({ variant: "ghost" })}>
               How It Works?
             </Link>
+            <Link
+              href="/pricing"
+              className={buttonVariants({ variant: "ghost" })}
+            >
+              Pricing
+            </Link>
           </div>
           <div className="grid gap-3">
             {status !== "loading" && (

@@ -113,7 +113,7 @@ export async function forkCourse(courseId: string) {
     if (!parentCourse) {
       throw new NotFoundError("Parent Course Not Found");
     }
-    if (parentCourse.userId == userId) {
+    if (parentCourse?.userId == userId) {
       throw new ValidationError("Forking own course is not allowed");
     }
     const forkCount = await prisma.course.count({
@@ -133,7 +133,7 @@ export async function forkCourse(courseId: string) {
         status: "DRAFT",
         forkedFromId: parentCourse.courseId,
         modules: {
-          create: parentCourse.modules.map((module) => ({
+          create: parentCourse.modules.map((module: any) => ({
             title: module.title,
             description: module.description,
             referenceSite: module.referenceSite,
@@ -145,7 +145,7 @@ export async function forkCourse(courseId: string) {
               create: {
                 tags: parentCourse.quiz.tags,
                 questions: {
-                  create: parentCourse.quiz.questions.map((q) => ({
+                  create: parentCourse.quiz.questions.map((q: any) => ({
                     question: q.question,
                     options: q.options,
                     answer: q.answer,
@@ -285,6 +285,7 @@ export async function getUsersDraftCourses() {
       where: {
         userId: userId,
         status: "DRAFT",
+        forkedFromId: null,
       },
       orderBy: {
         updatedAt: "desc",
@@ -299,34 +300,4 @@ export async function getUsersDraftCourses() {
   } catch (e: any) {
     throw HandleApiError(e);
   }
-}
-
-export async function updateCourses() {
-  const allCourses = await prisma.course.findMany({
-    select: {
-      courseId: true,
-      status: true,
-    },
-  });
-  const newCourses = allCourses.map((course) => {
-    if (course.status == "COMPLETED") {
-      return {
-        courseId: course.courseId,
-        stage: 4,
-      };
-    }
-  });
-  newCourses.forEach((course) => {
-    async function updateCourse(updatedcourse: any) {
-      await prisma.course.update({
-        where: {
-          courseId: updatedcourse?.courseId,
-        },
-        data: {
-          stage: updatedcourse?.stage,
-        },
-      });
-    }
-    updateCourse(course);
-  });
 }
