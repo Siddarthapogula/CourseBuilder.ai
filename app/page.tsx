@@ -56,8 +56,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-        <section></section>
-
         {/* For Whom section */}
         <section className="container mx-auto flex flex-col items-center gap-14 px-6 text-center">
           {/* Section Header */}
@@ -70,14 +68,13 @@ export default function Home() {
               designed to empower instructors, tutors, and course creators.
             </p>
           </div>
-
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full">
             {audienceData.map((item, index) => (
               <div
                 key={index}
                 className="flex flex-col items-center text-center space-y-3 p-6 border border-border/40 rounded-2xl bg-muted/30 hover:bg-muted/50 transition-colors duration-300"
               >
-                <div className="mb-2 flex justify-center items-center text-primary translate-y-[1px]">
+                <div className="mb-2 flex justify-center items-center text-primary translate-y-px">
                   {item.icon}
                 </div>
                 <h3 className="text-xl font-medium">{item.title}</h3>
@@ -88,7 +85,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-
         {/* Features section */}
         <section
           id="features"

@@ -31,7 +31,7 @@ export async function BuildCourse({
     if (!prompt || !generationStage)
       throw new ValidationError("provide prompt and generationStage correctly");
     const response = await genAi.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: prompt as string,
     });
     if (!response.text)

@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  AppError,
   HandleApiError,
   ValidationError,
 } from "@/lib/utils/error-handling-class";

@@ -70,8 +70,17 @@ export default function () {
     setStatus("Submitting");
     setFormError("");
     try {
-      await signIn("google", { callbackUrl: "/" });
-      toast.success("Login successfull.");
+      const result = await signIn("google", {
+        redirect: false,
+        callbackUrl: "/",
+      });
+      if (result && result?.error) {
+        setFormError(result.error);
+        toast.error("Login unsuccessfull.");
+      } else if (result && result?.ok) {
+        toast.success("Login successfull.");
+        router.push("/");
+      }
     } catch (e) {
       setFormError("Failed to initiate Google sign-in");
       toast.error("Login unsuccessfull.");
@@ -81,7 +90,7 @@ export default function () {
     if (session && session.status == "authenticated") {
       router.push("/");
     }
-  }, [session?.status]);
+  }, [session?.status, router]);
   if (session && session.status == "loading") {
     return <LoadingDisplay message="Loading" />;
   }

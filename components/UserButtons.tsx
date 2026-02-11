@@ -29,7 +29,7 @@ export default function UserButtons() {
           <Button
             onClick={() => {
               signOut({ callbackUrl: "/" });
-              toast.success("User Loggedout");
+              toast.success("User Logged Out");
             }}
           >
             Logout
